@@ -22,8 +22,9 @@ import os
 import re
 import sys
 
-from _common import (already_reminded, approve_hint, emit_context, payload_cwd, plan_mode,
-                     read_payload, session_id)
+from _common import (_shard_turn_path, already_reminded, approve_hint,
+                     detect_subagent, emit_context, flush_pending_reminders,
+                     is_agy, payload_cwd, plan_mode, read_payload, session_id)
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
 from tdq_state import (MODE_ALIASES, effective_lane,  # noqa: E402
@@ -227,7 +228,7 @@ def _nhac_worktree(cwd):
         return
     if mo:
         emit_context([lenh_cho_project(f"[TDQ:WORKTREE] {len(mo)} worktree(s) still open — run: "
-                                                "python3 scripts/tdq_team.py sweep", cwd)])
+                                       "python3 scripts/tdq_team.py sweep", cwd)])
 
 
 def _nhac_gon(cwd, state, payload, session):
@@ -253,9 +254,7 @@ def _nhac_gon(cwd, state, payload, session):
     emit_context([dong])
 
 
-
 def _agy_pre_invocation_hook(payload, cwd):
-    from _common import detect_subagent, emit_context, flush_pending_reminders, session_id
     sid = session_id(payload)
     queued = flush_pending_reminders(cwd, sid)
     if queued:
@@ -263,6 +262,12 @@ def _agy_pre_invocation_hook(payload, cwd):
     sub = detect_subagent(payload, cwd)
     if sub.get("is_subagent"):
         return True
+    shard = _shard_turn_path(cwd, sid)
+    if os.path.isfile(shard):
+        try:
+            os.remove(shard)
+        except OSError:
+            pass
     prompt = str(payload.get("prompt") or payload.get("user_message") or "")
     low = prompt.lower()
     if any(k in low for k in ("lỗi", "bug", "sửa lại", "broken", "fail", "không chạy", "sai rồi")):  # i18n-allow
@@ -273,7 +278,7 @@ def _agy_pre_invocation_hook(payload, cwd):
 def main():
     payload = read_payload()
     cwd = payload_cwd(payload)
-    if _agy_pre_invocation_hook(payload, cwd):
+    if is_agy() and _agy_pre_invocation_hook(payload, cwd):
         return
     sid = session_id(payload)
     turn_log_clear(cwd, sid)
@@ -421,7 +426,7 @@ def _nhac_qc(cwd, state, payload, session):
     )
     turn_log_append(cwd, "remind", session=session, code=ma_qc,
                     event="UserPromptSubmit", so_dong=1)
-    print(dong)
+    emit_context([dong])
 
 
 def _truncate(text, limit=MAX_CHARS):

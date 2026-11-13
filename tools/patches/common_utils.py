@@ -60,9 +60,11 @@ def write_utf8(path: Path, text: str) -> None:
         fh.write(text)
 
 
-def replace_exact(path: Path, old: str, new: str, *, label: str = "") -> None:
-    """Replace an exact snippet once; fail loudly if the upstream baseline changed."""
+def replace_exact(path: Path, old: str, new: str, *, label: str = "", sentinel: str = "") -> None:
+    """Replace an exact snippet once; idempotent when sentinel/new already landed."""
     text = read_utf8(path)
+    if (sentinel and sentinel in text) or (old not in text and new in text):
+        return
     if old not in text:
         tag = f" ({label})" if label else ""
         raise RuntimeError(f"Patch anchor not found in {path}{tag}:\n{old[:180]}")

@@ -15,8 +15,8 @@ Two jobs, in this order:
 """
 import os
 
-from _common import (already_reminded, block, echo_line, observe, payload_cwd, read_payload, remind,
-                     turn_rows)
+from _common import (already_reminded, block, detect_subagent, echo_line, observe,
+                     payload_cwd, read_payload, remind, turn_rows)
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
 # `today_log_rel` comes straight from tdq_state — one single source, shared with stop_gate.
@@ -75,13 +75,28 @@ def within(child, parent):
     return child == parent or child.startswith(parent + os.sep)
 
 
+def _enforce_agy_readonly_subagent(payload, cwd):
+    info = detect_subagent(payload, cwd)
+    if not info.get("is_subagent"):
+        return False
+    role = (info.get("role") or "").lower()
+    if any(r in role for r in ("reviewer", "qc-tester", "browser")):
+        block(cwd, payload, "READONLY", [
+            f"Subagent role `{role}` is strictly read-only and cannot modify files.",
+        ])
+        return True
+    return False
+
+
 def main():
     payload = read_payload()
+    cwd = payload_cwd(payload)
+    if _enforce_agy_readonly_subagent(payload, cwd):
+        return
     tool_input = payload.get("tool_input") or {}
     target = tool_input.get("file_path") or tool_input.get("notebook_path") or ""
     if not target or not isinstance(target, str):
         return
-    cwd = payload_cwd(payload)
     abs_target = os.path.realpath(target if os.path.isabs(target) else os.path.join(cwd, target))
     try:
         rel_target = os.path.relpath(abs_target, os.path.realpath(cwd))

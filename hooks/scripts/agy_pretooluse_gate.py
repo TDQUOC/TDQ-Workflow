@@ -51,15 +51,22 @@ STATE_WRITES = [
     # `open(...)` only counts as a write when a write-capable mode is named in the same call —
     # a bare `open(path)` or an explicit mode "r" is a read and must never be denied.
     re.compile(r"\bopen\([^)]*" + STATE + r"[^)]*['\"](?:w|a|x)[a-z+]*['\"]"),
+    re.compile(r"\b(?:Set-Content|Add-Content|Out-File|Copy-Item|Move-Item)\b[^;|&]*" + STATE, re.IGNORECASE),
 ]
 
 # The command field, tried across several plausible agy PreToolUse payload shapes.
 _CMD_PATHS = (
+    ("toolCall", "args", "CommandLine"),
+    ("toolCall", "args", "command"),
     ("tool_input", "command"),
+    ("tool_input", "CommandLine"),
     ("toolInput", "command"),
+    ("toolInput", "CommandLine"),
     ("input", "command"),
     ("arguments", "command"),
+    ("arguments", "CommandLine"),
     ("command",),
+    ("CommandLine",),
 )
 
 
@@ -91,14 +98,15 @@ def _branch_names(cmd):
         if b_name:
             names.append(_clean(b_name))
         if path:
-            names.append(_clean(path).rstrip("/").rsplit("/", 1)[-1])
+            names.append(_clean(path).replace("\\", "/").rstrip("/").rsplit("/", 1)[-1])
     return names
 
 
 def _writes_state(cmd):
-    if not re.search(STATE, cmd):
+    norm = cmd.replace("\\", "/")
+    if not re.search(STATE, norm):
         return False
-    return any(pattern.search(cmd) for pattern in STATE_WRITES)
+    return any(pattern.search(norm) for pattern in STATE_WRITES)
 
 
 def _log(msg):

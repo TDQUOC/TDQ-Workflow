@@ -44,26 +44,7 @@ def can_nhac(state, phase):
     return phase in PHASE_NHAC and not state.get("implement_pause")
 
 
-from _common import block, payload_cwd, read_payload
-from tdq_state import load
-
-
-def _agy_zero_popup_main():
-    payload = read_payload()
-    tname = payload.get("tool_name") or ""
-    if tname not in ("ask_question", "ask_user_question", "AskUserQuestion"):
-        return
-    cwd = payload_cwd(payload)
-    st = load(cwd, heal=False) or {}
-    if st.get("active_request"):
-        block(cwd, payload, "ZERO-POPUP", [
-            "Popup question UI is banned during an active TDQ request.",
-            "Ask numbered options (1a 2b 3c) directly in chat instead.",
-        ])
-
-
 def main():
-    _agy_zero_popup_main()
     try:
         payload = _common.read_payload()
         cwd = _common.payload_cwd(payload)
@@ -71,6 +52,13 @@ def main():
     except Exception as loi:  # noqa: BLE001 — a reminder hook must never break the question
         _log(f"cannot read state ({loi}) — silent")
         sys.exit(0)
+    tname = str(payload.get("tool_name") or "")
+    if (tname in ("ask_question", "ask_user_question") or (_common.is_agy() and tname == "AskUserQuestion")) \
+            and isinstance(state, dict) and state.get("active_request"):
+        _common.block(cwd, payload, "ZERO-POPUP", [
+            "Popup question UI is banned during an active TDQ request.",
+            "Ask numbered options (1a 2b 3c) directly in chat instead.",
+        ])
     phase = effective_phase(state, warn=False) if isinstance(state, dict) else None
     nhac = phase is not None and can_nhac(state, phase)
     _log(f"phase={phase} · {'remind' if nhac else 'silent'}")

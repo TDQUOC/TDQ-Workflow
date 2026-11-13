@@ -23,7 +23,9 @@ import re
 
 from _common import (
     block,
+    detect_subagent,
     echo_line,
+    is_agy,
     observe,
     payload_cwd,
     read_payload,
@@ -126,28 +128,29 @@ def _clean(raw):
     return raw.strip("'\"")
 
 
-
-import re as _re_ps
-_PS_WRITE_PATTERN = _re_ps.compile(
+_PS_WRITE_PATTERN = re.compile(
     r"(?:Set-Content|Add-Content|Out-File|Copy-Item|Move-Item|Remove-Item|New-Item)\b",
-    _re_ps.IGNORECASE,
+    re.IGNORECASE,
 )
 
 
 def _enforce_agy_bash_guards(payload, cwd):
-    from _common import block, detect_subagent
-    cmd = str((payload.get("tool_input") or {}).get("command") or "")
     info = detect_subagent(payload, cwd)
+    agy = is_agy()
+    if not agy and not info.get("is_subagent"):
+        return False
+    cmd = str((payload.get("tool_input") or {}).get("command") or "")
     role = (info.get("role") or "").lower()
     if any(r in role for r in ("reviewer", "browser")) and (
         ">" in cmd or _PS_WRITE_PATTERN.search(cmd) or any(w in cmd for w in ("tee ", "sed -i", "rm ", "mv "))
     ):
         block(cwd, payload, "READONLY", [f"Read-only subagent `{role}` cannot mutate files via shell."])
         return True
-    if _PS_WRITE_PATTERN.search(cmd) and ("docs/tdq/state.json" in cmd.replace("\\", "/") or "docs/tdq/STATE.md" in cmd.replace("\\", "/")):
+    norm_cmd = cmd.replace("\\", "/")
+    if agy and _PS_WRITE_PATTERN.search(cmd) and ("docs/tdq/state.json" in norm_cmd or "docs/tdq/STATE.md" in norm_cmd):
         block(cwd, payload, "GATE", ["Do not mutate TDQ state via PowerShell; use tdq_state.py CLI."])
         return True
-    if _re_ps.search(r"git\s+(?:checkout\s+-[bB]|switch\s+-[cC]|branch)\s+['\x22]?(?:claude|antigravity|gemini|codex)[-_]", cmd, _re_ps.IGNORECASE):
+    if agy and re.search(r"git\s+(?:checkout\s+-[bB]|switch\s+-[cC]|branch)\s+['\"]?(?:claude|antigravity|gemini|codex)[-_]", cmd, re.IGNORECASE):
         block(cwd, payload, "TDQ:GIT", ["AI-prefixed branch names are banned; name the branch after the work."])
         return True
     return False

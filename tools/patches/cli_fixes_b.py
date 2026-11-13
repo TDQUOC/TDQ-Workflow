@@ -8,6 +8,8 @@ def _patch_tdq_transcript(scripts_dir: Path) -> None:
     """NEW-19: Add Antigravity brain transcript.jsonl + Double-JSON tool_calls parser."""
     path = scripts_dir / "tdq_transcript.py"
     ensure_utf8_import(path)
+    if "AGY_TYPES" in read_utf8(path):
+        return
     replace_exact(
         path,
         'CLAUDE_TYPES = {"api-request", "assistant", "user", "system", "progress"}\n'
@@ -99,6 +101,8 @@ def _patch_eval_hosts(scripts_dir: Path) -> None:
     """NEW-20 & NEW-21: Add antigravity host adapter to tdq_eval_hosts.py."""
     path = scripts_dir / "tdq_eval_hosts.py"
     ensure_utf8_import(path)
+    if "AGY_EVENT_TYPES" in read_utf8(path):
+        return
     replace_exact(
         path,
         'SUPPORTED_HOSTS = ("claude", "codex")',
@@ -139,6 +143,7 @@ def _patch_test_and_skills_tools(scripts_dir: Path) -> None:
         '        "CLAUDE_CONFIG_DIR": str(home / ".claude"),\n'
         '        "GEMINI_CONFIG_DIR": str(home / ".gemini"),',
         label="NEW-22 tdq_test_process GEMINI_CONFIG_DIR",
+        sentinel='"GEMINI_CONFIG_DIR"',
     )
     tr = scripts_dir / "tdq_test_receipt.py"
     replace_exact(
@@ -146,6 +151,7 @@ def _patch_test_and_skills_tools(scripts_dir: Path) -> None:
         'GENERATED_PREFIXES = ("docs/tdq/", ".claude/worktrees/", "docs/workinglog/", "docs/working-log/")',
         'GENERATED_PREFIXES = ("docs/tdq/", ".claude/worktrees/", ".tdq-worktrees/", "docs/workinglog/", "docs/working-log/")',
         label="NEW-22 tdq_test_receipt GENERATED_PREFIXES",
+        sentinel='".tdq-worktrees/"',
     )
     cs = scripts_dir / "tdq_checkstatus.py"
     ensure_utf8_import(cs)
@@ -154,45 +160,47 @@ def _patch_test_and_skills_tools(scripts_dir: Path) -> None:
         '    r"^python3 scripts/tdq_state\\.py "',
         '    r"^(?:python3|py -3) scripts/tdq_state\\.py "',
         label="NEW-24 tdq_checkstatus py -3 allow",
+        sentinel="(?:python3|py -3)",
     )
     si = scripts_dir / "skill_inventory.py"
     ensure_utf8_import(si)
-    replace_exact(
-        si,
-        '    if not any(enabled.values()):\n        return []',
-        '    if not any(enabled.values()):\n        return _agy_plugin_skill_dirs(home, project)',
-        label="NEW-27 skill_inventory empty claude fallback",
-    )
-    replace_exact(
-        si,
-        'def _plugin_skill_dirs(home, project):',
-        'def _agy_plugin_skill_dirs(home, project):\n'
-        '    dirs, seen = [], set()\n'
-        '    for base in (\n'
-        '        os.path.join(home, ".gemini", "config", "plugins"),\n'
-        '        os.path.join(project, "plugins"),\n'
-        '    ):\n'
-        '        if not os.path.isdir(base):\n            continue\n'
-        '        for name in sorted(os.listdir(base)):\n'
-        '            sdir = os.path.join(base, name, "skills")\n'
-        '            if os.path.isdir(sdir) and sdir not in seen:\n'
-        '                seen.add(sdir)\n'
-        '                dirs.append((name, sdir))\n'
-        '    return dirs\n\n\n'
-        'def _plugin_skill_dirs(home, project):',
-        label="NEW-27 skill_inventory AGY helper",
-    )
-    replace_exact(
-        si,
-        '                    break\n    return dirs',
-        '                    break\n'
-        '    for item in _agy_plugin_skill_dirs(home, project):\n'
-        '        if item[1] not in seen:\n'
-        '            seen.add(item[1])\n'
-        '            dirs.append(item)\n'
-        '    return dirs',
-        label="NEW-27 skill_inventory merge AGY",
-    )
+    if "def _agy_plugin_skill_dirs" not in read_utf8(si):
+        replace_exact(
+            si,
+            '    if not any(enabled.values()):\n        return []',
+            '    if not any(enabled.values()):\n        return _agy_plugin_skill_dirs(home, project)',
+            label="NEW-27 skill_inventory empty claude fallback",
+        )
+        replace_exact(
+            si,
+            'def _plugin_skill_dirs(home, project):',
+            'def _agy_plugin_skill_dirs(home, project):\n'
+            '    dirs, seen = [], set()\n'
+            '    for base in (\n'
+            '        os.path.join(home, ".gemini", "config", "plugins"),\n'
+            '        os.path.join(project, "plugins"),\n'
+            '    ):\n'
+            '        if not os.path.isdir(base):\n            continue\n'
+            '        for name in sorted(os.listdir(base)):\n'
+            '            sdir = os.path.join(base, name, "skills")\n'
+            '            if os.path.isdir(sdir) and sdir not in seen:\n'
+            '                seen.add(sdir)\n'
+            '                dirs.append((name, sdir))\n'
+            '    return dirs\n\n\n'
+            'def _plugin_skill_dirs(home, project):',
+            label="NEW-27 skill_inventory AGY helper",
+        )
+        replace_exact(
+            si,
+            '                    break\n    return dirs',
+            '                    break\n'
+            '    for item in _agy_plugin_skill_dirs(home, project):\n'
+            '        if item[1] not in seen:\n'
+            '            seen.add(item[1])\n'
+            '            dirs.append(item)\n'
+            '    return dirs',
+            label="NEW-27 skill_inventory merge AGY",
+        )
 
     # Ensure utf8_io across remaining standalone CLI scripts on Windows
     for name in (
@@ -212,6 +220,7 @@ def _patch_test_and_skills_tools(scripts_dir: Path) -> None:
             '    "portable/workflow/02-spec.md",\n    "portable/workflow/03-plan.md",\n    "portable/workflow/references/user-facing-block.md",\n)',
             '    "portable/workflow/02-spec.md",\n    "portable/workflow/03-plan.md",\n    "portable/workflow/references/user-facing-block.md",\n)\nSCOPE = tuple(p for p in SCOPE if os.path.exists(os.path.join(ROOT, p)))',
             label="scan_block_symbols filter existing SCOPE",
+            sentinel="if os.path.exists(os.path.join(ROOT, p))",
         )
 
 
@@ -236,4 +245,5 @@ def apply_all(scripts_dir: Path) -> None:
             '        except ImportError as exc:\n'
             '            raise ThieuThuVienDem(CAI_DAT) from exc',
             label="skill_tokens tiktoken fallback",
+            sentinel="import tiktoken",
         )

@@ -17,7 +17,7 @@ import tdq_eval_contract
 import tdq_transcript
 from tdq_test_process import OwnedProcessJob, _private_environment
 
-SUPPORTED_HOSTS = ("claude", "codex")
+SUPPORTED_HOSTS = ("claude", "codex", "antigravity")
 CHUNK_SIZE = 64 * 1024
 DEFAULT_MAX_BYTES = 16 * 1024 * 1024
 DEFAULT_MAX_EVENTS = 50000
@@ -31,8 +31,9 @@ CODEX_EVENT_TYPES = {
     "thread.started", "turn.started", "turn.completed", "turn.failed",
     "item.started", "item.updated", "item.completed", "error",
 }
+AGY_EVENT_TYPES = {"USER_INPUT", "PLANNER_RESPONSE", "SYSTEM", "TOOL_RESPONSE"}
 KNOWN_EVENT_TYPES = (
-    CLAUDE_EVENT_TYPES | CODEX_EVENT_TYPES | tdq_transcript.UNTIMED_TYPES
+    CLAUDE_EVENT_TYPES | CODEX_EVENT_TYPES | AGY_EVENT_TYPES | tdq_transcript.UNTIMED_TYPES
 )
 
 
@@ -50,6 +51,8 @@ def canonical_host_name(host: Optional[str]) -> Optional[str]:
         return "claude"
     if normalized == "codex":
         return "codex"
+    if normalized in ("antigravity", "agy"):
+        return "antigravity"
     return normalized
 
 
@@ -496,6 +499,8 @@ def build_host_command(host: str, trial_spec: Dict[str, Any]) -> List[str]:
         return ["codex", "exec", "--json", "--model", model, "--sandbox", "read-only",
                 "--skip-git-repo-check", "-c", "developer_instructions=" + json.dumps(instructions),
                 "--", prompt]
+    if host == "antigravity":
+        return ["agy", "agent", "--prompt", prompt]
     raise ValueError("unsupported_host")
 
 

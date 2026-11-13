@@ -47,6 +47,7 @@ EXCLUDE_DIRS = frozenset({
     ".git", "docs", "graphify-out", "__pycache__", ".pytest_cache", ".venv",
     "tests", "node_modules", ".remember", "ClaudeExport", "claude-export",
     "portable", "portable_claude", "portable_codex",
+    "plugins", "tools", ".pytest_tmp_base",
 })
 EXCLUDE_FILES = frozenset({
     ".DS_Store", "state.json", ".tdq-turn.jsonl",
@@ -65,9 +66,11 @@ RELEASE_EXCLUDE_DIRS = frozenset({
     "__pycache__", ".pytest_cache", ".venv", "node_modules", ".remember",
     "ClaudeExport",
 })
+RELEASE_EXCLUDE_TOP_DIRS = frozenset({"plugins", "tools"})
+RELEASE_EXCLUDE_PATHS = frozenset({".agents/plugins.json"})
 RELEASE_EXCLUDE_FILES = frozenset({
     ".DS_Store", "CHANGELOG-archive.md", "pyrightconfig.json",
-    "state.json", ".tdq-turn.jsonl",
+    "state.json", ".tdq-turn.jsonl", "README-Antigravity.md",
 })
 RELEASE_EXCLUDE_SCRIPTS = frozenset({
     "canvas_a4_ch4_ch7.py", "canvas_a4_rebuild.py", "canvas_draw.py",
@@ -214,6 +217,8 @@ THU_TU_SKILL = (
     # over-engineering in what build just produced, and reading it earlier would have nothing
     # to look at.
     "tdq-lean",
+    "tdq-browser-test",
+    "tdq-browser-research",
     "tdq-checkportable",  # source in PORTABLE_SRC, not in `skills/`
     "tdq-status",
     "tdq-check-status",
@@ -425,37 +430,70 @@ def goc_agy_tuyet_doi(goc_cai=None):
 def _sinh_hooks_agy(duong, nen_tang=None, goc_cai=None):
     """`hooks.json` at the plugin root — commands are absolute paths into the plugin's own tree.
 
-    Wire shape follows the agent-hooks contract documented for agy (source N5, 2026-09-03):
-    an event map whose entries carry `hooks[].type = "command"`.
+    Antigravity `jsonhook.JSONHookSpec` expects named top-level hook-group objects
+    (no top-level string `description`), grouped `matcher`/`hooks` items for `PreToolUse`,
+    and flat handler objects for `Stop`.
     """
     su_kien = {}
     goc = goc_agy_tuyet_doi(goc_cai)
     for ten_event, ten_file in HOOK_AGY:
-        su_kien.setdefault(ten_event, []).append({"hooks": [{
+        lenh_hook = {
             "type": "command",
             "command": f'{tien_to_python(nen_tang)} "{goc}/hooks/scripts/{ten_file}"',
-        }]})
-    _ghi_json(duong, {
-        "description": "TDQ workflow for Antigravity CLI (agy) — auto-generated, never edited "
-                        "by hand. Lives at the plugin root; agy reads it once the plugin is "
-                        "enabled in ~/.gemini/config/config.json — see README.md.",
-        "hooks": su_kien,
-    })
+        }
+        if ten_event in ("PreToolUse", "PostToolUse"):
+            su_kien.setdefault(ten_event, []).append({
+                "matcher": "*",
+                "hooks": [lenh_hook],
+            })
+        else:
+            su_kien.setdefault(ten_event, []).append(lenh_hook)
+    _ghi_json(duong, {"hooks": su_kien})
 
 
 def _sinh_plugin_json_agy(duong, version):
-    """`plugin.json` at the plugin root — the one file that makes agy treat this directory as a
-    plugin. A live `agy 1.1.11` install ships plugins whose manifest is as small as
-    `{"name": "firebase"}`, so only `name` is load-bearing; the rest is for humans."""
+    """`plugin.json` at the plugin root — metadata matching `agy plugin validate --strict`
+    (no `userConfig` so Antigravity does not treat plugin config as unresolved)."""
     _ghi_json(duong, {
         "name": TEN_PLUGIN_AGY,
+        "displayName": "TDQ Workflow",
         "version": version or "0",
         "description": "Spec-driven TDQ workflow: intake → spec → plan → build → QC → report.",
+        "logo": "assets/logo.svg",
+        "suggestedPrompts": [
+            "/tdq-intake Open a new feature/bugfix/hotfix request under TDQ Workflow",
+            "/tdq-check-status Recover or inspect current TDQ request state from disk evidence",
+            "/tdq-setup Verify and configure 3-tier search (LSP, Graphify, Chrome DevTools)",
+        ],
+        "author": {"name": "TDQ"},
+        "license": "MIT",
+        "keywords": ["tdq-workflow", "spec-driven", "sdd", "lsp", "qc", "hooks", "antigravity"],
     })
 
 
+def _sinh_logo_svg_agy(duong):
+    """Write crisp deterministic SVG icon referenced by `plugin.json` `logo`."""
+    os.makedirs(os.path.dirname(duong), exist_ok=True)
+    svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">\n'
+        '  <defs>\n'
+        '    <linearGradient id="tdqGrad" x1="8" y1="8" x2="88" y2="88" gradientUnits="userSpaceOnUse">\n'
+        '      <stop offset="0%" stop-color="#0F172A"/>\n'
+        '      <stop offset="100%" stop-color="#1E3A8A"/>\n'
+        '    </linearGradient>\n'
+        '  </defs>\n'
+        '  <rect x="4" y="4" width="88" height="88" rx="20" fill="url(#tdqGrad)" stroke="#38BDF8" stroke-width="2.5"/>\n'
+        '  <path d="M22 30h52M48 30v38" stroke="#38BDF8" stroke-width="6" stroke-linecap="round"/>\n'
+        '  <path d="M26 52l8 8 14-16" stroke="#22C55E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>\n'
+        '  <circle cx="70" cy="60" r="8" fill="#F59E0B"/>\n'
+        '</svg>\n'
+    )
+    with open(duong, "w", encoding="utf-8", newline="\n") as f:
+        f.write(svg)
+
+
 def _sinh_mcp_agy(duong):
-    _ghi_json(duong, sinh_mcp())
+    _ghi_json(duong, sinh_mcp(cho_agy=True))
 
 
 def sinh_ban_antigravity(repo, dest, version="", ten_thu_muc=None, goc_cai=None):
@@ -501,6 +539,7 @@ def sinh_ban_antigravity(repo, dest, version="", ten_thu_muc=None, goc_cai=None)
         os.chmod(dst, 0o755)
 
     _sinh_plugin_json_agy(os.path.join(goc, "plugin.json"), version)
+    _sinh_logo_svg_agy(os.path.join(goc, "assets", "logo.svg"))
     _sinh_hooks_agy(os.path.join(goc, "hooks.json"), goc_cai=goc_cai)
     _sinh_mcp_agy(os.path.join(goc, "mcp_config.json"))
 
@@ -595,9 +634,11 @@ def sinh_agy_tai_cho(repo, dich, version=""):
 def la_duong_dan_release(rel_path):
     """Return True if the repo-relative path belongs on the clean release branch."""
     norm = rel_path.replace("\\", "/").strip("/")
-    if not norm:
+    if not norm or norm in RELEASE_EXCLUDE_PATHS:
         return False
     parts = norm.split("/")
+    if parts[0] in RELEASE_EXCLUDE_TOP_DIRS or parts[0].startswith(".pytest_tmp"):
+        return False
     if any(p in RELEASE_EXCLUDE_DIRS for p in parts[:-1]):
         return False
     if parts[-1] in RELEASE_EXCLUDE_FILES:

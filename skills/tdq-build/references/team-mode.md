@@ -5,9 +5,9 @@
   Decision table — default GIAO, keeping a task must match exactly one row=64-78 ·
   Workflow implement ownership=79-83 · The wave loop=84-97 ·
   What the machine checks for you, so you do not have to=98-122 ·
-  The delegation prompt template — all 9 fields, none left out=123-142 ·
-  RIGHT/WRONG examples=143-152 · Explicit Anti-Patterns=153-160 · Self-check=161-178 ·
-  Sổ worktree=179
+  The delegation prompt template — all 9 fields, none left out=123-141 ·
+  RIGHT/WRONG examples=142-150 · Explicit Anti-Patterns=151-158 · Self-check=159-173 ·
+  Sổ worktree=174
 -->
 
 Soul: chất lượng > runtime > context cost · luật gốc: ../../tdq-conventions/references/soul.md <!-- i18n-allow: canonical Soul line -->
@@ -139,18 +139,14 @@ TRẢ VỀ: đúng khuôn TASK/STATUS/FILES/TEST/BRANCH/TICK-READY/NOTES ở age
 
 Include spec and plan paths in prompt body. Subagent cannot read this conversation.
 
-### Dynamic Model Tier Routing (Điều phối model)
-Subagent defaults to `model: haiku` (`effort: medium`). For complex tasks (heavy math, security, core module), leader overrides to `model: sonnet` or `model: opus`. Never hard-locked.
-
 ### RIGHT/WRONG examples
 
 1. Splitting: RIGHT: assign done, 9/12 tasks giao · WRONG: work on main, never generate the map.
 2. Rhythm: RIGHT: dispatch 4 tasks of the same wave concurrently · WRONG: call 1 agent, wait for it, then next.
 3. Merging: RIGHT: check clean -> merge -> tick [x] right away · WRONG: merge straight through with no check.
-4. Ticks: RIGHT: 4 tasks [>] plus 1 [~] task of leader · WRONG: 4 tasks [~] at once.
-5. Shared contracts: RIGHT: finish constant first, then dispatch · WRONG: dispatch in parallel before contract is merged.
+4. Shared contracts: RIGHT: finish constant first, then dispatch · WRONG: dispatch in parallel before contract is merged.
 
-Full cases: [team-mode-tra-cuu.md](team-mode-tra-cuu.md).
+Full cases & model tier routing: [team-mode-tra-cuu.md](team-mode-tra-cuu.md).
 
 ## Explicit Anti-Patterns
 

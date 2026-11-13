@@ -24,6 +24,7 @@ PARSER_VERSION = "normalized-trace-1"
 UTC = datetime.timezone.utc
 CLAUDE_TYPES = {"api-request", "assistant", "user", "system", "progress"}
 CODEX_TYPES = {"session_meta", "response_item", "event_msg", "turn_context"}
+AGY_TYPES = {"USER_INPUT", "PLANNER_RESPONSE", "SYSTEM", "TOOL_RESPONSE"}
 UNTIMED_TYPES = {"api-request-shape", "api-request-blob", "last-prompt", "cost-state",
                  "file-history-snapshot", "queue-operation", "summary", "custom-title",
                  "agent-name", "agent-color", "tag", "saved_hook_context", "pr-link",
@@ -105,9 +106,11 @@ def _candidate_paths(project_dir, transcript_dir, host, home):
             return [explicit]
         roots = [explicit]
     else:
-        roots = _claude_directories(project_dir, home) if host != "codex" else []
-        if host != "claude":
+        roots = _claude_directories(project_dir, home) if host in ("auto", "claude") else []
+        if host in ("auto", "codex"):
             roots.append(Path(home or Path.home()) / ".codex" / "sessions")
+        if host in ("auto", "antigravity", "agy"):
+            roots.extend(_agy_directories(home))
     candidates = []
     for root in roots:
         files, errors = _walk_jsonl(root)
@@ -158,6 +161,7 @@ def _normalize_line(line):
         _read_metadata(record, metadata)
         _read_claude(record, events)
         _read_codex(record, events)
+        _read_agy(record, events)
     return [_normalized_delta(metadata), _normalized_delta(events)]
 
 
@@ -262,6 +266,9 @@ def _read_metadata(record, source):
             _identity_value(source, payload.get("cwd"), "_projects")
         if event_type == "session_meta":
             _identity_value(source, payload.get("id", payload.get("session_id")), "_sessions")
+    elif event_type in AGY_TYPES:
+        source["_hosts"].add("antigravity")
+        _identity_value(source, record.get("conversation_id") or record.get("conversationId"), "_sessions")
     elif event_type not in UNTIMED_TYPES:
         _issue(source, "unknown_events")
 
@@ -525,8 +532,10 @@ def read_transcripts(project_dir, transcript_dir=None, host="auto", session_ids=
     Cache is off by default; auto requires a request_id. Optional cache_stats is
     filled with lookup/timing counters without altering the business result.
     """
-    if host not in ("auto", "claude", "codex"):
-        raise ValueError("host must be auto, claude or codex")
+    if host not in ("auto", "claude", "codex", "antigravity", "agy"):
+        raise ValueError("host must be auto, claude, codex or antigravity")
+    if host == "agy":
+        host = "antigravity"
     if isinstance(session_ids, str):
         session_ids = [session_ids]
     selected = set(session_ids or [])
@@ -545,3 +554,49 @@ def read_transcripts(project_dir, transcript_dir=None, host="auto", session_ids=
               "attribution": "session" if selected else "project_window"}
     reader.finish()
     return result
+
+
+def _agy_directories(home=None):
+    """Return Antigravity brain log directories under ~/.gemini/antigravity/brain/*/.system_generated/logs."""
+    base = Path(home or Path.home()) / ".gemini" / "antigravity" / "brain"
+    if not base.is_dir():
+        return []
+    return sorted(p for p in base.glob("*/.system_generated/logs") if p.is_dir())
+
+
+def _decode_double_json(raw_args):
+    """Unwrap Double-JSON stringified args in Antigravity PLANNER_RESPONSE tool_calls."""
+    val = raw_args
+    for _ in range(2):
+        if isinstance(val, str):
+            try:
+                val = json.loads(val)
+            except ValueError:
+                break
+    return val
+
+
+def _read_agy(record, source):
+    """Extract API and Double-JSON tool timing marks from Antigravity transcript.jsonl records."""
+    event_type = record.get("type")
+    if event_type not in AGY_TYPES:
+        return
+    at_val = record.get("created_at") or record.get("timestamp")
+    ts_rec = {"timestamp": at_val}
+    step_id = str(record.get("step_index") if record.get("step_index") is not None else "0")
+    if event_type == "USER_INPUT":
+        source["_capabilities"].add("api")
+        _mark(source, ts_rec, "api", "start", f"step:{step_id}", step_id)
+        return
+    if event_type == "PLANNER_RESPONSE":
+        _mark(source, ts_rec, "api", "end", f"step:{step_id}", step_id)
+        tcalls = record.get("tool_calls") or []
+        if isinstance(tcalls, list) and tcalls:
+            source["_capabilities"].add("tool")
+            for idx, call in enumerate(tcalls):
+                if not isinstance(call, dict):
+                    continue
+                _ = _decode_double_json(call.get("arguments") or call.get("args"))
+                cid = str(call.get("id") or f"agy:{step_id}:{idx}")
+                _mark(source, ts_rec, "tool", "start", cid, step_id)
+                _mark(source, ts_rec, "tool", "end", cid, step_id)

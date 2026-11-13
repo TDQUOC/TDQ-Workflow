@@ -58,7 +58,7 @@ class TuongThichAgy(unittest.TestCase):
         du_lieu = json.loads(_doc(BAN_AGY, "hooks.json"))
         lenh = [h["command"]
                 for muc in du_lieu["hooks"].values()
-                for nhom in muc for h in nhom["hooks"]]
+                for nhom in muc for h in nhom.get("hooks", [nhom])]
         self.assertTrue(lenh, "hooks.json agy không khai lệnh nào")
         for c in lenh:
             # 2026-09-27: hỏi đúng câu "còn `~` CHƯA BUNG không", thay vì "có ký tự `~` không".

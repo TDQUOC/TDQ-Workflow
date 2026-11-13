@@ -501,7 +501,7 @@ def _doc_tien_trinh_mac_dinh():
     """-> [{pid, khoi_dong (epoch), lenh}] of agent-lsp processes. Infrastructure errors -> []."""
     if os.name == "nt":
         lenh = ["powershell", "-NoProfile", "-Command",
-                "$ps = Get-CimInstance Win32_Process; $song = @{}; $ps | ForEach-Object { $song[$_.ProcessId] = 1 }; "
+                "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $ps = Get-CimInstance Win32_Process; $song = @{}; $ps | ForEach-Object { $song[$_.ProcessId] = 1 }; "
                 "$ps | Where-Object { $_.Name -like 'agent-lsp*' } | Select-Object ProcessId,CreationDate,CommandLine,"
                 "@{n='ChaSong';e={[bool]$song[$_.ParentProcessId]}} | ConvertTo-Json -Compress"]
         rc, ra = tdq_lsp._run(lenh, timeout=30)
@@ -556,6 +556,8 @@ def broker_mo_coi(brokers):
     mo_coi, moi_nhat = [], {}
     for b in sorted(brokers, key=lambda b: -b["khoi_dong"]):
         if not b["goc"]:
+            continue
+        if ("?" in b["goc"] or "\ufffd" in b["goc"]) and b.get("cha_song", True):
             continue
         if not os.path.isdir(b["goc"]):
             mo_coi.append(b)
@@ -616,3 +618,13 @@ def canh_bao_commit(trong=None):
     return (f"bộ nhớ commit chỉ còn {trong:.1f} GB trống (< {NGUONG_COMMIT_GB:.0f} GB) — language server có thể "
             "crash 0xc0000409. Tăng pagefile: System Properties → Advanced → Performance → Virtual memory "
             "(đặt System managed hoặc tăng kích thước), rồi đóng bớt ứng dụng/VM nặng.")
+
+
+def _agy_mcp_candidate_files():
+    """Return Antigravity mcp_config.json candidate paths alongside Claude configs."""
+    plugin_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return [
+        os.path.join(plugin_root, "mcp_config.json"),
+        os.path.expanduser("~/.gemini/antigravity/mcp_config.json"),
+        os.path.expanduser("~/.gemini/config/plugins/tdq-workflow/mcp_config.json"),
+    ]

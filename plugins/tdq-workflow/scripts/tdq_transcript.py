@@ -539,8 +539,10 @@ def read_transcripts(project_dir, transcript_dir=None, host="auto", session_ids=
     Cache is off by default; auto requires a request_id. Optional cache_stats is
     filled with lookup/timing counters without altering the business result.
     """
-    if host not in ("auto", "claude", "codex"):
-        raise ValueError("host must be auto, claude or codex")
+    if host not in ("auto", "claude", "codex", "antigravity", "agy"):
+        raise ValueError("host must be auto, claude, codex or antigravity")
+    if host == "agy":
+        host = "antigravity"
     if isinstance(session_ids, str):
         session_ids = [session_ids]
     selected = set(session_ids or [])

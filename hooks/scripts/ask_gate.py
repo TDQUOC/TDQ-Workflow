@@ -45,6 +45,13 @@ def main():
     except Exception as loi:  # noqa: BLE001 — a reminder hook must never break the question
         _log(f"cannot read state ({loi}) — silent")
         sys.exit(0)
+    tname = str(payload.get("tool_name") or "")
+    if (tname in ("ask_question", "ask_user_question") or (_common.is_agy() and tname == "AskUserQuestion")) \
+            and isinstance(state, dict) and state.get("active_request"):
+        _common.block(cwd, payload, "ZERO-POPUP", [
+            "Popup question UI is banned during an active TDQ request.",
+            "Ask numbered options (1a 2b 3c) directly in chat instead.",
+        ])
     phase = effective_phase(state, warn=False) if isinstance(state, dict) else None
     nhac = phase is not None and can_nhac(state, phase)
     _log(f"phase={phase} · {'remind' if nhac else 'silent'}")

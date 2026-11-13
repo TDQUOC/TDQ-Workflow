@@ -22,8 +22,8 @@ for _p in (_tdq_scripts, _tdq_here):
 import utf8_io  # noqa: E402,F401
 import os
 
-from _common import (already_reminded, block, echo_line, observe, payload_cwd, read_payload, remind,
-                     turn_rows)
+from _common import (already_reminded, block, detect_subagent, echo_line, observe,
+                     payload_cwd, read_payload, remind, turn_rows)
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
 # `today_log_rel` comes straight from tdq_state — one single source, shared with stop_gate.
@@ -82,10 +82,10 @@ def within(child, parent):
     return child == parent or child.startswith(parent + os.sep)
 
 
-
 def _enforce_agy_readonly_subagent(payload, cwd):
-    from _common import block, detect_subagent
     info = detect_subagent(payload, cwd)
+    if not info.get("is_subagent"):
+        return False
     role = (info.get("role") or "").lower()
     if any(r in role for r in ("reviewer", "qc-tester", "browser")):
         block(cwd, payload, "READONLY", [

@@ -173,11 +173,27 @@ def _enabled_plugins(home, project):
     return merged
 
 
+def _agy_plugin_skill_dirs(home, project):
+    dirs, seen = [], set()
+    for base in (
+        os.path.join(home, ".gemini", "config", "plugins"),
+        os.path.join(project, "plugins"),
+    ):
+        if not os.path.isdir(base):
+            continue
+        for name in sorted(os.listdir(base)):
+            sdir = os.path.join(base, name, "skills")
+            if os.path.isdir(sdir) and sdir not in seen:
+                seen.add(sdir)
+                dirs.append((name, sdir))
+    return dirs
+
+
 def _plugin_skill_dirs(home, project):
     """[(plugin name, skills directory)] of the plugins enabled for this project."""
     enabled = _enabled_plugins(home, project)
     if not any(enabled.values()):
-        return []
+        return _agy_plugin_skill_dirs(home, project)
     data = _load_json(os.path.join(home, ".claude", "plugins", "installed_plugins.json"))
     entries = data.get("plugins", {}) if isinstance(data, dict) else {}
     project_real = os.path.realpath(project)
@@ -200,6 +216,10 @@ def _plugin_skill_dirs(home, project):
                         seen.add(skills)
                         dirs.append((key.split("@")[0], skills))
                     break
+    for item in _agy_plugin_skill_dirs(home, project):
+        if item[1] not in seen:
+            seen.add(item[1])
+            dirs.append(item)
     return dirs
 
 

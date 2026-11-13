@@ -79,17 +79,28 @@ def _run(cmd, cwd, timeout=STEP_TIMEOUT):
 
 def _changed_files(project):
     """The files git reports as changed (absolute paths). Not a git repo → empty."""
-    rc, out = _run(["git", "status", "--porcelain"], project, timeout=30)
-    if rc != 0:
+    # NEW-01: -c core.quotepath=false + -z avoids \ooo escapes on Vietnamese paths.
+    kw = {"cwd": project, "capture_output": True, "timeout": 30}
+    if os.name == "nt":
+        kw["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+    try:
+        p = subprocess.run(["git", "-c", "core.quotepath=false", "status", "--porcelain", "-z"], **kw)
+    except (OSError, subprocess.TimeoutExpired):
         return []
-    files = []
-    for line in out.splitlines():
-        name = line[3:].strip() if len(line) > 3 else ""
-        if " -> " in name:                      # renamed file
-            name = name.split(" -> ", 1)[1]
-        name = name.strip('"')
-        if name:
-            files.append(os.path.join(project, name))
+    if p.returncode != 0:
+        return []
+    entries = p.stdout.decode("utf-8", errors="replace").split("\0")
+    files, i = [], 0
+    while i < len(entries):
+        rec = entries[i]
+        i += 1
+        if len(rec) < 4:
+            continue
+        status_xy, raw = rec[:2], rec[3:]
+        if status_xy[0] in ("R", "C") and i < len(entries):
+            i += 1  # consume source path record emitted after destination in -z
+        if raw:
+            files.append(os.path.join(project, raw))
     return files
 
 
@@ -176,8 +187,9 @@ def step_khoa_token(project, files):
     that goes stale. And why it runs FIRST: `doc_lint` R13 reads the lock, so linting before the
     lock is written reddens the turn over a number this very turn is about to update.
     """
-    if not any(f"{os.sep}skills{os.sep}" in os.path.abspath(f) and f.endswith(".md")
-               for f in files):
+    watched = ("skills/", "agents/", "rules/", "CLAUDE.md", "GEMINI.md", "AGENTS.md")
+    normed = [f.replace("\\", "/") for f in files]
+    if not any(any(n == w or w in n for w in watched) and n.endswith(".md") for n in normed):
         return Step("khoa-token", "skip", "no rule file changed")
     sys.path.insert(0, SCRIPTS_DIR)
     import skill_tokens

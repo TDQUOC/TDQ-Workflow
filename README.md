@@ -139,7 +139,7 @@ Mọi nền tảng đều đọc **cùng một thư mục `skills/` duy nhất**
 | **Claude Code** | `.claude-plugin/` | `/plugin marketplace add TDQUOC/TDQ-Workflow` rồi `/plugin install tdq-workflow@tdq-local` |
 | **Codex** | `.agents/plugins/marketplace.json` + `.codex-plugin/plugin.json` | `codex plugin marketplace add TDQUOC/TDQ-Workflow` rồi `codex plugin add tdq-workflow@tdq-local` |
 | **OpenCode** | `.opencode/plugins/tdq-workflow.js` | Khai báo trong `opencode.json` (xem chi tiết tại [`.opencode/INSTALL.md`](.opencode/INSTALL.md)) |
-| **Antigravity** | `plugins/tdq-workflow/` (Native v0.97.0, 0 findings `agy plugin validate`) | `py -3 -B tools/build_agy_plugin.py` rồi `py -3 tools/install_agy_plugin.py --sync-local-mcp` (xem [`README-Antigravity.md`](README-Antigravity.md)) |
+| **Antigravity** | `plugins/tdq-workflow/` (Native v0.97.0, 0 findings `agy plugin validate`) | `python3 scripts/build_portable.py --sinh-agy` hoặc `py -3 -B tools/build_agy_plugin.py` + `py -3 tools/install_agy_plugin.py --sync-local-mcp` (xem [`README-Antigravity.md`](README-Antigravity.md)) |
 
 ### Cấu hình tự động cập nhật cho Claude Code
 

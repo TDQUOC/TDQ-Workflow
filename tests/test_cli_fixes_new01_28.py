@@ -1,5 +1,5 @@
 """V4 Empirical Verification: All 28 CLI & Antigravity fixes (NEW-01 through NEW-28)."""
-import importlib
+import importlib.util
 import json
 import os
 import subprocess
@@ -13,6 +13,20 @@ PLUGIN_DIR = WORKSPACE / "plugins" / "tdq-workflow"
 SCRIPTS_DIR = PLUGIN_DIR / "scripts"
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
+
+
+def _load_plugin_script(name: str):
+    """Load a module strictly from plugins/tdq-workflow/scripts to prevent sys.modules shadowing."""
+    if sys.path[0] != str(SCRIPTS_DIR):
+        sys.path.insert(0, str(SCRIPTS_DIR))
+    mod_name = f"_agy_plugin_{name}"
+    if mod_name in sys.modules:
+        return sys.modules[mod_name]
+    spec = importlib.util.spec_from_file_location(mod_name, SCRIPTS_DIR / f"{name}.py")
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[mod_name] = mod
+    spec.loader.exec_module(mod)
+    return mod
 
 
 def _init_git(repo: Path) -> None:
@@ -36,7 +50,7 @@ def _run_script(script_name: str, *args: str, cwd: Path = PLUGIN_DIR, env_extra:
 
 def test_new01_tdq_finish_vietnamese_z_paths_and_watched_rules(tmp_path):
     """NEW-01: NUL-delimited git status -z handles UTF-8 filenames and watches rules/ + AGENTS.md."""
-    import tdq_finish
+    tdq_finish = _load_plugin_script("tdq_finish")
 
     repo = tmp_path / "repo_vn"
     repo.mkdir()
@@ -58,8 +72,8 @@ def test_new01_tdq_finish_vietnamese_z_paths_and_watched_rules(tmp_path):
 
 def test_new02_03_04_lsp_module_and_search_rules():
     """NEW-02, NEW-03, NEW-04: lsp_module UTF-8/PS + search_rules AGY MCP & Windows quote guards."""
-    import lsp_module
-    import search_rules
+    lsp_module = _load_plugin_script("lsp_module")
+    search_rules = _load_plugin_script("search_rules")
 
     src_lsp = (SCRIPTS_DIR / "lsp_module.py").read_text(encoding="utf-8")
     assert "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8" in src_lsp
@@ -77,15 +91,15 @@ def test_new02_03_04_lsp_module_and_search_rules():
     assert "run_command" in search_rules.CONG_CU_SHELL
 
     # Trailing Windows backslash inside quotes must not swallow closing quote or hang
-    tokens = search_rules.kiem_tra_lenh_shell('rg foo "C:\\Users\\admin\\path\\"') if hasattr(search_rules, "kiem_tra_lenh_shell") else None
+    tokens = search_rules.phan_loai("run_command", 'rg foo "C:\\Users\\admin\\path\\"')
+    assert tokens["loai"] == "tim_code"
     src_sr = (SCRIPTS_DIR / "search_rules.py").read_text(encoding="utf-8")
-    assert "in_dquote" in src_sr and "os.name == \"nt\"" in src_sr
-    _ = tokens
+    assert "in_dquote" in src_sr and 'sys.platform == "win32"' in src_sr
 
 
 def test_new05_tdq_state_hotfix_prune_and_atomic_retry(tmp_path, monkeypatch):
     """NEW-05: PRUNE_DIRS, 5-attempt Windows PermissionError retry, hotfix CLI."""
-    import tdq_state
+    tdq_state = _load_plugin_script("tdq_state")
 
     assert {".gemini", ".agents", ".tdq-worktrees"}.issubset(tdq_state.PRUNE_DIRS)
 
@@ -119,11 +133,11 @@ def test_new05_tdq_state_hotfix_prune_and_atomic_retry(tmp_path, monkeypatch):
 
 def test_new06_to_new14_setup_lsp_codex_harvest_knowledge_devtool_team_doclint(tmp_path):
     """NEW-06..NEW-14: Host guards, LSP/Codex/Devtool mcp_config, harvest, knowledge, team, doc_lint."""
-    import tdq_setup
-    import tdq_lsp
-    import tdq_codex_mcp
-    import tdq_devtool_mcp
-    import tdq_team
+    tdq_setup = _load_plugin_script("tdq_setup")
+    tdq_lsp = _load_plugin_script("tdq_lsp")
+    tdq_codex_mcp = _load_plugin_script("tdq_codex_mcp")
+    tdq_devtool_mcp = _load_plugin_script("tdq_devtool_mcp")
+    tdq_team = _load_plugin_script("tdq_team")
 
     # NEW-06: Antigravity host guard & no Claude hook conflict
     assert tdq_setup.is_antigravity_host() is True
@@ -167,13 +181,13 @@ def test_new06_to_new14_setup_lsp_codex_harvest_knowledge_devtool_team_doclint(t
 
 def test_new15_to_new28_transcript_eval_hosts_test_isolation_tokens(tmp_path):
     """NEW-15..NEW-28: AGY transcript, eval_hosts antigravity, test isolation, checkstatus, skill_tokens."""
-    import tdq_transcript
-    import tdq_eval_hosts
-    import tdq_test_process
-    import tdq_test_receipt
-    import tdq_checkstatus
-    import skill_inventory
-    import skill_tokens
+    tdq_transcript = _load_plugin_script("tdq_transcript")
+    tdq_eval_hosts = _load_plugin_script("tdq_eval_hosts")
+    tdq_test_process = _load_plugin_script("tdq_test_process")
+    tdq_test_receipt = _load_plugin_script("tdq_test_receipt")
+    tdq_checkstatus = _load_plugin_script("tdq_checkstatus")
+    skill_inventory = _load_plugin_script("skill_inventory")
+    skill_tokens = _load_plugin_script("skill_tokens")
 
     assert tdq_transcript.AGY_TYPES == {"USER_INPUT", "PLANNER_RESPONSE", "SYSTEM", "TOOL_RESPONSE"}
     assert tdq_transcript._decode_double_json('"{ \\"a\\": 1 }"') == {"a": 1}
@@ -203,5 +217,5 @@ def test_new15_to_new28_transcript_eval_hosts_test_isolation_tokens(tmp_path):
 
     # Verify remaining key modules import with utf8_io cleanly
     for mod in ("tdq_graphify", "tdq_archify", "tdq_vision_diff", "tdq_bench", "tdq_skill_eval", "tdq_checkportable"):
-        m = importlib.import_module(mod)
+        m = _load_plugin_script(mod)
         assert m is not None

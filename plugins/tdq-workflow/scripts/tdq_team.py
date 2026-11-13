@@ -1086,6 +1086,8 @@ def _tao_ntfs_junction_sharing(project_dir, worktree_dir):
                 res = tdq_ten_lenh.chay_subprocess(
                     ["cmd.exe", "/c", "mklink", "/J", os.path.abspath(dst), os.path.abspath(src)],
                     capture_output=True,
+                    encoding="utf-8",
+                    errors="replace",
                     text=True,
                     timeout=10,
                 )

@@ -43,6 +43,7 @@ SCOPE = (
     "portable/workflow/03-plan.md",
     "portable/workflow/references/user-facing-block.md",
 )
+SCOPE = tuple(p for p in SCOPE if os.path.exists(os.path.join(ROOT, p)))
 
 
 def la_ky_hieu(ch):

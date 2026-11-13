@@ -257,7 +257,7 @@ class TestBanAntigravity(TempDest):
         ten_file = set()
         for muc in du_lieu["hooks"].values():
             for matcher in muc:
-                for hook in matcher.get("hooks", []):
+                for hook in matcher.get("hooks", [matcher]):
                     ten_file.add(os.path.basename(hook["command"].split()[-1].strip("\"")))
         self.assertTrue(ten_file, "hooks.json không khai hook nào")
         for ten in sorted(ten_file):
@@ -274,11 +274,12 @@ class TestBanAntigravity(TempDest):
         duong = os.path.join(self.goc, "hooks.json")
         with open(duong, encoding="utf-8") as f:
             du_lieu = json.load(f)
+        self.assertNotIn("description", du_lieu, "top-level string description breaks agy JSONHookSpec")
         su_kien = du_lieu["hooks"]
         self.assertEqual(sorted(su_kien), ["PreToolUse", "Stop"])
         for nhom_list in su_kien.values():
             for nhom in nhom_list:
-                for hook in nhom["hooks"]:
+                for hook in nhom.get("hooks", [nhom]):
                     lenh = hook["command"]
                     self.assertNotIn("${", lenh, "command không được còn biến chưa thay")
                     self.assertFalse(tdq_checkportable.con_dau_nga_chua_bung(lenh),
@@ -517,6 +518,7 @@ class TestSinhNhanhRelease(TempDest):
             ".taskmaster/config.json",
             "tools_kiem/dem_da_nen_tang.py",
             ".github/workflows/test.yml",
+            ".agents/plugins.json",
             "CHANGELOG-archive.md",
             "pyrightconfig.json",
             "scripts/samples/transcript-step-audit.jsonl",
@@ -545,6 +547,7 @@ class TestSinhNhanhRelease(TempDest):
             "agents/tdq-implementer.md",
             ".claude-plugin/plugin.json",
             ".codex-plugin/plugin.json",
+            ".agents/plugins/marketplace.json",
             ".opencode/plugins/tdq-workflow.js",
             "scripts/tdq_state.py",
             "scripts/build_portable.py",

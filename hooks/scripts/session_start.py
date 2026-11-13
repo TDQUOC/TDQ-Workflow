@@ -22,8 +22,8 @@ import sys
 import time
 from datetime import datetime
 
-from _common import (already_reminded, payload_cwd, read_payload, session_id,
-                     turn_log_append)
+from _common import (already_reminded, emit_context, is_agy, payload_cwd,
+                     read_payload, session_id, turn_log_append)
 # Placed AFTER `from _common`: `_common` itself injects `scripts/` into sys.path. The
 # from-import shape (not a module attribute call) is what lets graphify emit a cross-file
 # `calls` edge.
@@ -219,21 +219,23 @@ def main():
     # graphify. A notice that silently vanishes is worse than none. Each is empty on a machine
     # that does not need it, so those sessions pay nothing for it.
     thong_bao_update_plugin = ""
-    try:
-        _, msg = tdq_setup.tu_dong_cap_nhat_plugin_user(goc_plugin=GOC_PLUGIN, cwd=cwd)
-        if msg:
-            thong_bao_update_plugin = msg
-    except Exception:  # noqa: BLE001
-        pass
+    if not is_agy():
+        try:
+            _, msg = tdq_setup.tu_dong_cap_nhat_plugin_user(goc_plugin=GOC_PLUGIN, cwd=cwd)
+            if msg:
+                thong_bao_update_plugin = msg
+        except Exception:  # noqa: BLE001
+            pass
     thong_bao_update_nen = ""
     try:
         thong_bao_update_nen = tdq_setup.doc_thong_bao_update_moi()
     except Exception:  # noqa: BLE001
         pass
-    try:
-        tdq_setup.kich_hoat_kiem_tra_remote_nen()
-    except Exception:  # noqa: BLE001
-        pass
+    if not is_agy():
+        try:
+            tdq_setup.kich_hoat_kiem_tra_remote_nen()
+        except Exception:  # noqa: BLE001
+            pass
     da_cap_nhat_ver = False
     loi_cap_nhat = ""
     try:
@@ -383,7 +385,7 @@ def main():
                         event="SessionStart", muc_gat=muc,
                         so_dong=len(rewritten.partition(f"[{MA_GON}]")[2].splitlines()[1:]) if nap_day_du else 1,
                         source=str(payload.get("source") or ""))
-    print(rewritten)
+    emit_context([rewritten])
 
 
 if __name__ == "__main__":

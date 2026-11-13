@@ -298,7 +298,9 @@ TUONG_DUONG_MCP = {"javascript": "typescript"}
 
 def _all_mcp_configs(duong="~/.claude.json"):
     plugin_cfg = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "mcp_config.json")
-    return [duong, os.path.expanduser("~/.gemini/antigravity/mcp_config.json"), plugin_cfg]
+    if os.environ.get("TDQ_HOST") == "antigravity" or os.path.isfile(plugin_cfg):
+        return [duong, os.path.expanduser("~/.gemini/antigravity/mcp_config.json"), plugin_cfg]
+    return [duong]
 
 
 def mcp_args(duong="~/.claude.json"):

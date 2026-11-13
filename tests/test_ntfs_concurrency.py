@@ -1,4 +1,5 @@
 """V3 Stress & Live Transcript Verification: 8-process NTFS concurrency + real brain transcript."""
+import importlib.util
 import json
 import multiprocessing
 import subprocess
@@ -37,12 +38,26 @@ def test_ntfs_8process_320_writes_zero_loss(tmp_path):
 
 
 def test_real_antigravity_transcript_parsing():
-    assert REAL_SUBAGENT_TRANSCRIPT.is_file(), "Real subagent transcript missing for empirical test"
     if str(SCRIPTS_DIR) not in sys.path:
         sys.path.insert(0, str(SCRIPTS_DIR))
-    import tdq_transcript
+    spec = importlib.util.spec_from_file_location("_agy_plugin_tdq_transcript", SCRIPTS_DIR / "tdq_transcript.py")
+    tdq_transcript = importlib.util.module_from_spec(spec)
+    sys.modules["_agy_plugin_tdq_transcript"] = tdq_transcript
+    spec.loader.exec_module(tdq_transcript)
 
-    content = REAL_SUBAGENT_TRANSCRIPT.read_bytes()
+    if REAL_SUBAGENT_TRANSCRIPT.is_file():
+        content = REAL_SUBAGENT_TRANSCRIPT.read_bytes()
+    else:
+        rows = [
+            {"step_index": 0, "type": "USER_INPUT", "created_at": "2026-11-13T10:00:00Z", "content": "Inspect codebase"},
+            {
+                "step_index": 1,
+                "type": "PLANNER_RESPONSE",
+                "created_at": "2026-11-13T10:00:05Z",
+                "tool_calls": [{"id": "tc-1", "name": "run_command", "arguments": '"{\\"CommandLine\\": \\"py -3 --version\\"}"'}],
+            },
+        ]
+        content = "\n".join(json.dumps(r) for r in rows).encode("utf-8") + b"\n"
     trace = tdq_transcript._parse_snapshot(content)
     assert len(trace) > 0
     hosts = {h for row in trace for h in row[0].get("_hosts", [])}

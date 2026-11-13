@@ -1,6 +1,6 @@
 # TDQ-Workflow v0.97.0 trên Google Antigravity — Master Verification Checklist & Bằng Chứng Thực Nghiệm (10 Phân Hệ)
 
-> **Thời điểm tạo & kiểm chứng:** `2026-11-14T01:42:05+07:00` · **Baseline Upstream:** `C:\Users\admin\Documents\Projects\ForAgentCode\TDQ-Workflow` (`dev @ b423ee06`) · **Compiled Plugin:** `plugins/tdq-workflow` (`OK`)
+> **Thời điểm tạo & kiểm chứng:** `2026-11-14T04:58:21+07:00` · **Nhánh tích hợp:** `AntigravityBranch_Improve` (`e356695d` base) · **Compiled Plugin:** `plugins/tdq-workflow` (`OK`)
 
 ## Tóm Tắt Chỉ Số Đạt Chuẩn (Observed Live Evidence)
 
@@ -9,9 +9,11 @@
 | **Plugin Build Compiler** | `scripts: 61` (`60 .py + 1 sample`), `hooks: 19` (`21 .py` tổng gồm AGY adapters), `skills_files: 75`, `agents: 6`, `ast_checked_py: 81`, `md_checked_budget: 22` | `py -3 -B tools/build_agy_plugin.py` (rc=`0`) |
 | **Official Validator (`source`)** | `name: tdq-workflow`, `agents: 6`, `hooks: 6`, `mcpServers: 3`, `rules: 10`, `skills: 12`, `findings: []` (**0 error / 0 warning**) | `agy.EXE plugin validate plugins/tdq-workflow --strict --json` (rc=`0`) |
 | **Official Validator (`staged install`)** | `install_dry_run_rc: 0`, `install_staged_rc: 0`, `staged_validate findings: []` (**0 error / 0 warning**) | `tools/install_agy_plugin.py --dry-run` & `--target <tmp>` |
-| **Pytest Verification (`V1–V6`)** | **`14/14 PASSED`** (`0` failed, `16996.7 ms`) | `py -3 -m pytest tests/ -v --basetemp=.pytest_tmp` (rc=`0`) |
-| **Linters & Token / Symbol Gates** | `doc_lint` skills (`74` files): `0 violations` · agents (`6`): `0` · rules (`10`): `0` · `token_budget --kiem`: rc=`0` · `scan_block_symbols --chi-khoi`: `0` ngoài whitelist (`stderr: `) · `i18n_check`: `0` dòng Việt trong 3 hook mới | `docs/verification_evidence.json` -> `linters` |
-| **7 Companion Extensions & MCP** | `agent-lsp.exe` stdio JSON-RPC sống (`36.3 ms`, **65 tools**), `chrome-devtools` (`npx 11.19.0`), `tavily-primary` (`no_variables_trap: True`), Archify `ĐẠT`, Graphify OK, Vision Diff OK, Codex CLI `codex-cli 0.166.0` | `test_v5` & `tools/run_full_verification.py` |
+| **Pytest Verification (`V1–V6`)** | **`15/15 PASSED`** (`0` failed, `18096.0 ms`) | `py -3 -B tools/run_full_verification.py` -> `docs/verification_evidence.json` (rc=`0`) |
+| **Full Multi-Host Pytest Suite (`Pillar 1`)** | **`4196 passed, 36 skipped, 2703 subtests passed`** (`0` failed, `215.77s`; unfiltered across full suite) | `py -3 -B -m pytest tests/ -n auto -q --tb=short` (rc=`0`) |
+| **Portable AGY Generator (`--sinh-agy`)** | `150` files `CLEAN`, `agy plugin validate --strict --json` -> **`0` error / `0` warning** (`1` `"note"`) | `scripts/build_portable.py --sinh-agy` & `scripts/tdq_checkportable.py --root ... check` (rc=`0`) |
+| **Linters & Token / Symbol Gates** | `doc_lint` skills (`74` files): `0 violations` · agents (`6`): `0` · rules (`10`): `0` · `doc_index --tat-ca --kiem`: rc=`0` · `token_budget --kiem`: rc=`0` · `scan_block_symbols --chi-khoi`: `0` ngoài whitelist (`stderr: `) · `i18n_check`: `0` dòng Việt trong 3 hook mới | `docs/verification_evidence.json` -> `linters` |
+| **7 Companion Extensions & MCP** | `agent-lsp.exe` stdio JSON-RPC sống (`36.4 ms`, **65 tools**), `chrome-devtools` (`npx 11.19.0`), `tavily-primary` (`no_variables_trap: True`), Archify `ĐẠT`, Graphify OK, Vision Diff OK, Codex CLI `codex-cli 0.166.0` | `test_v5` & `tools/run_full_verification.py` |
 | **Upstream & Global Config Safety** | `upstream_code_clean: True` (`dev @ b423ee06`), `~/.gemini/config/config.json` SHA-256 bất biến: `3525858d7521b7b54147410e29966dd58325604676e7befefb7df67f2b03a646` | `git status -- plugins/ .claude-plugin/ scripts/ hooks/ tools/` |
 
 ---
@@ -20,7 +22,7 @@
 
 | Checklist | Extension / Engine | Lệnh / Cơ chế kiểm chứng | Kết quả thực tế quan sát |
 |---|---|---|---|
-| - [x] | **1. Agent-LSP MCP (`lsp`)** | Live stdio NDJSON JSON-RPC `initialize` + `tools/list` trên `C:\Users\admin\.local\bin\agent-lsp.exe` (`binary_exists: True`) | `rc=0`, độ trễ `36.3 ms`, trả về **65** tools thực tế *(Lưu ý thực nghiệm: chuỗi `instructions` của `agent-lsp.exe` tự quảng cáo `66 code intelligence tools`, nhưng `tools/list` trả đúng `65` tool sorted)* |
+| - [x] | **1. Agent-LSP MCP (`lsp`)** | Live stdio NDJSON JSON-RPC `initialize` + `tools/list` trên `C:\Users\admin\.local\bin\agent-lsp.exe` (`binary_exists: True`) | `rc=0`, độ trễ `36.4 ms`, trả về **65** tools thực tế *(Lưu ý thực nghiệm: chuỗi `instructions` của `agent-lsp.exe` tự quảng cáo `66 code intelligence tools`, nhưng `tools/list` trả đúng `65` tool sorted)* |
 | - [x] | **2. Chrome DevTools MCP (`chrome-devtools`)** | Kiểm tra `mcp_config.json` + `C:\Users\admin\AppData\Local\fnm_multishells\42416_1794595305260\npx.cmd --version` | `configured: True`, `npx` `11.19.0` (`rc=0`), args: `-y chrome-devtools-mcp@latest --userDataDir=C:/Users/admin/.gemini/chrome-devtools-profile` |
 | - [x] | **3. Tavily MCP (`tavily-primary`)** | Kiểm tra `mcp_config.json` & không bẫy `"variables"` (tự tắt plugin) | `configured: True`, `no_variables_trap: True`, args: `-y tavily-mcp@latest` |
 | - [x] | **4. Archify Visual BA** | `C:\Users\admin\AppData\Local\Programs\Python\Python313\python.exe -X utf8 scripts/tdq_setup.py --kiem-archify` | `rc=0` · `archify · ĐẠT (Node.js v24.21.0 (>= 18) · Archify tại C:\Users\admin\Documents\archify\archify\bin\archify.mjs)` |
@@ -44,7 +46,7 @@ activate_skill, add_workspace_folder, apply_edit, blast_radius, callers, close_d
 - [x] `plugins/tdq-workflow/hooks.json`: Top-level Antigravity group schema (6 nhóm, không chứa khóa `description` sai chuẩn, không dùng `${PLUGIN_ROOT}` trong chuỗi `command`).
 - [x] `plugins/tdq-workflow/mcp_config.json`: Khai báo đúng **3** MCP servers (`lsp`, `chrome-devtools`, `tavily-primary`), **không** có block `variables` hay chuỗi giả `"${TAVILY_API_KEY}"`.
 - [x] `plugins/tdq-workflow/manifest.json` & `plugins/tdq-workflow/README.md`: Đồng bộ danh sách script/skill/agent và `upstream_commit: b423ee06`.
-- [x] `.agents/plugins.json`: Khai báo `{"entries": [{"path": "./plugins"}]}` kích hoạt discovery cục bộ trong workspace mà không đụng cấu hình toàn cục.
+- [x] `.agents/plugins.json`: Khai báo `{"entries": [{"path": "./plugins"}]}` kích hoạt discovery cục bộ trong workspace mà không đụng cấu hình toàn cục (đồng thời được loại khỏi nhánh release qua `RELEASE_EXCLUDE_PATHS` trong `scripts/build_portable.py`, giữ nguyên `.agents/plugins/marketplace.json` cho Codex).
 - [x] `agy.EXE plugin validate plugins/tdq-workflow --strict --json`: Exit `0`, `findings: []` (`agents: 6`, `hooks: 6`, `mcpServers: 3`, `rules: 10`, `skills: 12`).
 - [x] `tools/install_agy_plugin.py`: `--dry-run` (rc=`0`), staged `--target` (rc=`0`) -> `agy.EXE plugin validate` trên thư mục staged trả về `findings: []` (`staged_validate_json` sạch 100%).
 - [x] Kiểm tra biên dịch Python & ngân sách Markdown (`V2`): `81` tệp `.py` parse AST sạch (không lỗi `\U` unicodeescape), `22` tệp `.md` (`rules/*.md` + `SKILL.md`) đều `< 24,000 bytes`.
@@ -55,7 +57,7 @@ activate_skill, add_workspace_folder, apply_edit, blast_radius, callers, close_d
 
 - [x] **Hiến pháp Soul (`skills/tdq-conventions/references/soul.md`):** Giữ nguyên thứ bậc bất khả xâm phạm **chất lượng > runtime > context cost**, 5 Bất biến Clean Code (kèm #4 *Giả thuyết + 5 Whys* & #5 *Triage Before Touch*), và thang 7 nấc `TDQ:GON` (*YAGNI trước SOLID*, Log Service bật mặc định với `TDQ_LOG=0` để tắt).
 - [x] **Bảng 6 ký hiệu phi-ASCII hợp lệ (`scan_block_symbols.py --chi-khoi`):** `Total: 6 distinct symbol(s) across 9 file(s) · 0 character(s) OUTSIDE the whitelist need a decision.` (`stderr` rỗng; `➤ · — → – …`).
-- [x] **Bộ Linter Tài Liệu & Ngân Sách Token:** `doc_lint.py skills` (`141.2 ms`, `0 violations` trên `74` files), `doc_lint.py agents` (`0 violations` trên `6` files), `doc_lint.py rules` (`0 violations` trên `10` files), `token_budget.py --kiem` (rc=`0`).
+- [x] **Bộ Linter Tài Liệu & Ngân Sách Token:** `doc_lint.py skills` (`127.8 ms`, `0 violations` trên `74` files), `doc_lint.py agents` (`0 violations` trên `6` files), `doc_lint.py rules` (`0 violations` trên `10` files), `doc_index.py --tat-ca --kiem` (rc=`0`), `token_budget.py --kiem` (rc=`0`).
 
 ### Danh Sách 10 Tệp Luật 2 Tầng (`plugins/tdq-workflow/rules/*.md` — Đều `< 24,000 B`)
 
@@ -161,7 +163,7 @@ activate_skill, add_workspace_folder, apply_edit, blast_radius, callers, close_d
 
 ---
 
-## Mục 7 — Toàn Bộ 14 Edge Cases (`EC-01..EC-14`) & Stress Test NTFS (`V3`)
+## Mục 7 — Toàn Bộ 15 Edge Cases (`EC-01..EC-15`) & Stress Test NTFS (`V3`)
 
 | Checklist | Mã | Độ nặng | Kịch bản lỗi hiểm hóc | Giải pháp vá | Bằng chứng kiểm thử live |
 |---|---|---|---|---|---|
@@ -179,6 +181,7 @@ activate_skill, add_workspace_folder, apply_edit, blast_radius, callers, close_d
 | - [x] | **EC-12** | `P1` | `PreInvocation` bắn ở mọi model-step (15 lần/lượt) xóa nhầm turn ledger giữa lượt | Fast-path cho step `2..N` khi `last_user_input_sha` không đổi; giữ nguyên turn ledger | `test_ec01_to_ec14_live_cmd_hooks` PASSED |
 | - [x] | **EC-13** | `P1` | Windows `cp1252` crash ở `codex_edit_gate.py`, `luat_gon.py` khi gặp tiếng Việt | Inject `utf8_io` chuẩn + sửa `sys.stdin.buffer.read().decode('utf-8-sig')` | `test_v2_python_ast` + `test_ec01_to_ec14` PASSED |
 | - [x] | **EC-14** | `P2` | `transcript.jsonl` của Antigravity double-encode JSON trong `tool_calls[].args` | Unpack `json.loads()` nhiều lớp an toàn trong `tdq_transcript.py` & `_common.py` | `test_real_antigravity_transcript_parsing` PASSED |
+| - [x] | **EC-15** | `P1` | Protojson `toolCall`/`workspacePaths` (`file://`), `CORTEX_STEP_TYPE_*`, `injectSteps` & `TERMINAL_*` stop guard | Chuẩn hóa trong `_common.py`, `stop_gate.py`, `agy_pretooluse_gate.py`, `agy_stop_gate.py` | `test_ec15_protojson_toolcall_workspacepaths_and_terminal_stop` PASSED |
 
 ---
 
@@ -248,7 +251,7 @@ activate_skill, add_workspace_folder, apply_edit, blast_radius, callers, close_d
 
 ---
 
-### Phụ Lục — Toàn Bộ 14 Test Cases Đã Chạy (`pytest tests/ -v --basetemp=.pytest_tmp`)
+### Phụ Lục — Toàn Bộ 15 Test Cases Đã Chạy (`py -3 -B tools/run_full_verification.py`)
 
 1. - [x] `tests/test_agy_plugin_validate.py::test_v1_agy_plugin_validate_strict_json` — **PASSED**
 2. - [x] `tests/test_agy_plugin_validate.py::test_v1_install_dry_run_and_staged_validate` — **PASSED**
@@ -262,5 +265,6 @@ activate_skill, add_workspace_folder, apply_edit, blast_radius, callers, close_d
 10. - [x] `tests/test_e2e_workflow.py::test_v6_full_10_step_e2e_pipeline` — **PASSED**
 11. - [x] `tests/test_hooks_dual_protocol.py::test_all_24_tdq_codes_registered` — **PASSED**
 12. - [x] `tests/test_hooks_dual_protocol.py::test_ec01_to_ec14_live_cmd_hooks` — **PASSED**
-13. - [x] `tests/test_ntfs_concurrency.py::test_ntfs_8process_320_writes_zero_loss` — **PASSED**
-14. - [x] `tests/test_ntfs_concurrency.py::test_real_antigravity_transcript_parsing` — **PASSED**
+13. - [x] `tests/test_hooks_dual_protocol.py::test_ec15_protojson_toolcall_workspacepaths_and_terminal_stop` — **PASSED**
+14. - [x] `tests/test_ntfs_concurrency.py::test_ntfs_8process_320_writes_zero_loss` — **PASSED**
+15. - [x] `tests/test_ntfs_concurrency.py::test_real_antigravity_transcript_parsing` — **PASSED**

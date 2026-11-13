@@ -42,6 +42,7 @@ def _private_environment(root):
         "PYTHONUSERBASE": str(home / ".python"),
         "CODEX_HOME": str(home / ".codex"),
         "CLAUDE_CONFIG_DIR": str(home / ".claude"),
+        "GEMINI_CONFIG_DIR": str(home / ".gemini"),
         "HOMEDRIVE": home.drive, "HOMEPATH": str(home)[len(home.drive):],
         "TDQ_KHOI_TAO_NEN": "0", "TDQ_KHONG_CHAM_MAY": "1",
     }

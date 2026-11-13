@@ -510,8 +510,6 @@ def smoke_ba_tang(project):
 
 
 def va_hook_xung_dot():
-    if is_antigravity_host():
-        return [], []
     """-> (đã vá, nợ). Gỡ khối `PreToolUse` nhắm công cụ tìm kiếm khỏi hook của plugin ngoài.
 
     Vì sao phải sửa file của plugin khác: tài liệu Claude Code nói thẳng *"There is no way to
@@ -524,6 +522,8 @@ def va_hook_xung_dot():
     Phiên bản plugin nằm trong đường dẫn cache, nên một lần update là hook cũ sống lại ở thư mục
     mới. Đó là lý do lệnh này tồn tại thay vì sửa tay một lần: nó chạy lại được, mỗi lần setup.
     """
+    if is_antigravity_host():
+        return [], []
     da_va, no = [], []
     for ten, tep, _matcher in tdq_lsp.hook_xung_dot():
         du_lieu = tdq_lsp._doc_json(tep)
@@ -2017,17 +2017,15 @@ def main(argv, khai_codex=None):
     return rc
 
 
-if __name__ == "__main__":
-    sys.exit(chay_cli(sys.argv[1:]))
-
 _ORIG_GHIM_HUONG_DAN = ghim_huong_dan_tool
+
 
 def is_antigravity_host():
     """Return True when running inside Antigravity plugin/agent context."""
-    env = os.environ
-    if env.get("TDQ_HOST") == "antigravity" or env.get("ANTIGRAVITY_AGENT"):
+    if os.environ.get("TDQ_HOST") == "antigravity":
         return True
-    return ".gemini" in os.path.abspath(__file__).lower() or "tdq-workflow-antigravity" in os.path.abspath(__file__).lower()
+    norm = os.path.abspath(__file__).replace("\\", "/").lower()
+    return any(m in norm for m in ("/.gemini/config/plugins/", "/plugins/tdq-workflow/", "/antigravity_portable/"))
 
 
 def _sync_agy_guard_ghim(duong, goc=None):
@@ -2037,4 +2035,9 @@ def _sync_agy_guard_ghim(duong, goc=None):
         return False
     return _ORIG_GHIM_HUONG_DAN(duong, goc=goc)
 
+
 ghim_huong_dan_tool = _sync_agy_guard_ghim
+
+
+if __name__ == "__main__":
+    sys.exit(chay_cli(sys.argv[1:]))

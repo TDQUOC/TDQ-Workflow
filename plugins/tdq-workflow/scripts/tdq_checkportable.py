@@ -140,8 +140,22 @@ def sinh_settings(goc_bundle, duong_hooks_json):
     return {"hooks": json.loads(tho)}
 
 
-def sinh_mcp():
-    """The content of `.mcp.json`: servers + env variable NAMES only, never a key value."""
+def sinh_mcp(cho_agy=False):
+    """The content of `.mcp.json` / `mcp_config.json`: servers only, never a key value.
+
+    When `cho_agy=True`, omit `"env"` so Antigravity inherits `TAVILY_API_KEY` from the host
+    environment cleanly instead of passing a literal `"${TAVILY_API_KEY}"` string.
+    """
+    if cho_agy:
+        return {
+            "mcpServers": {
+                ten: {
+                    "command": "npx",
+                    "args": ["-y", "tavily-mcp@latest"],
+                }
+                for ten in MCP_SERVERS
+            }
+        }
     ten_bien = "TAVILY_" + "API" + "_KEY"
     return {
         "mcpServers": {

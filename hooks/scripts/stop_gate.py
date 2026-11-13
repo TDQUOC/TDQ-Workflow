@@ -20,7 +20,7 @@ project is not a git repo) → it falls back to exactly the old behaviour.
 import json
 import os
 
-from _common import payload_cwd, read_payload, turn_rows
+from _common import TERMINAL_STOP_REASONS, emit_context, is_agy, payload_cwd, read_payload, stop_block, turn_rows
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
 from tdq_state import (BOOKKEEPING_PATHS, _TASK_LINE, _info, _warn,  # noqa: E402
@@ -217,7 +217,7 @@ def _streak_bump(cwd, sha):
     return dem
 
 
-def _chan_chua_xong(cwd, state):
+def _chan_chua_xong(cwd, state, payload=None):
     """Print the [TDQ:UNFINISHED] block when the plan is unfinished; True when it did.
 
     `stop_hook_active: false` is what re-arms the gate: the model must be pushed again on
@@ -237,23 +237,28 @@ def _chan_chua_xong(cwd, state):
         # Nothing has moved for MAX_STREAK stops in a row: blocking again would only trap the
         # session. Step down to a hint and let the turn end.
         _info(f"stop_gate: TDQ:UNFINISHED stepped down after {dem - 1} block(s) with no progress")
-        print(json.dumps({"hookSpecificOutput": {
-            "hookEventName": "Stop",
-            "additionalContext": (f"[TDQ:STUCK] {task_open_count(cwd)} open task(s).{next_step} "
-                                  "Finish plan or declare a genuine blocker with "
-                                  "`tdq_state.py pause --loai <kind> --ly-do \"<why>\"`."),
-        }}, ensure_ascii=False))
+        stuck_msg = (f"[TDQ:STUCK] {task_open_count(cwd)} open task(s).{next_step} "
+                     "Finish plan or declare a genuine blocker with "
+                     "`tdq_state.py pause --loai <kind> --ly-do \"<why>\"`.")
+        if is_agy():
+            emit_context([stuck_msg])
+        else:
+            print(json.dumps({"hookSpecificOutput": {
+                "hookEventName": "Stop",
+                "additionalContext": stuck_msg,
+            }}, ensure_ascii=False))
         return True
     _info(f"stop_gate: block TDQ:UNFINISHED · phase=implement · open={task_open_count(cwd)} "
           f"· plan={tick.get('path')} · streak={dem}")
     reason = (reason + next_step)[:MAX_CHARS]
-    print(json.dumps({"decision": "block", "reason": reason, "stop_hook_active": False},
-                     ensure_ascii=False))
+    stop_block(cwd, payload or {}, reason, code="TDQ:UNFINISHED", stop_hook_active=False)
     return True
 
 
 def main():
     payload = read_payload()
+    if str(payload.get("terminationReason") or "") in TERMINAL_STOP_REASONS:
+        return
     # Claude Code sets this flag after a block, as loop protection. The two older gates
     # honour it; the [TDQ:UNFINISHED] gate must not, or a single stop would end the run
     # with the plan half done — which is the whole defect it exists to close.
@@ -262,7 +267,7 @@ def main():
     state = load(cwd)
     if state is None or not state.get("active_request"):
         return
-    if lap_lai and _chan_chua_xong(cwd, state):
+    if lap_lai and _chan_chua_xong(cwd, state, payload):
         return
     if lap_lai:
         return
@@ -295,14 +300,11 @@ def main():
     if culprit and not logged:
         # §6: a block decision has to be traceable — a wrong block must name its source at once.
         _info(f"stop_gate: block TDQ:LOG · source={source} · path={culprit}")
-        print(json.dumps({
-            "decision": "block",
-            # The wording must fit 300 chars even when the path hits MAX_PATH_CHARS.
-            "reason": (f"[TDQ:LOG] Repo changed ({culprit}), {log_rel} not appended. "
-                       "Run `tdq_finish.py --files <file> --log \"<summary>\"`, no hand Edit. "
-                       "Then reprint the last chat block VERBATIM (question + options + "
-                       "the ➤ line), no summarising."),
-        }, ensure_ascii=False))
+        reason = (f"[TDQ:LOG] Repo changed ({culprit}), {log_rel} not appended. "
+                  "Run `tdq_finish.py --files <file> --log \"<summary>\"`, no hand Edit. "
+                  "Then reprint the last chat block VERBATIM (question + options + "
+                  "the ➤ line), no summarising.")
+        stop_block(cwd, payload, reason, code="TDQ:LOG")
         return
 
     # Second block point: code changed during the turn while the plan checkboxes stood still.
@@ -318,18 +320,16 @@ def main():
                 and tick["sha"] == snap["plan_sha"]:
             _info(f"stop_gate: block TDQ:TICK · source={source} · path={culprit} "
                   f"· plan={tick['path']} · checkboxes unchanged during the turn")
-            print(json.dumps({
-                "decision": "block",
-                "reason": ("[TDQ:TICK] This turn edited code but the plan checkboxes did not change. "
-                           "Open the plan, mark [~] the task in progress and [x] the ones done (task by task). "
-                           "Then reprint the last chat block VERBATIM — no summarising."),
-            }, ensure_ascii=False))
+            reason = ("[TDQ:TICK] This turn edited code but the plan checkboxes did not change. "
+                      "Open the plan, mark [~] the task in progress and [x] the ones done (task by task). "
+                      "Then reprint the last chat block VERBATIM — no summarising.")
+            stop_block(cwd, payload, reason, code="TDQ:TICK")
             return
 
     # Third block point: the turn is ending while the plan still has open tasks. Unlike the
     # two gates above it does NOT require the turn to have edited a file — a final "I'll stop
     # here" turn typically edits nothing, which is exactly how it slipped through until now.
-    if _chan_chua_xong(cwd, state):
+    if _chan_chua_xong(cwd, state, payload):
         return
 
     reminded = {r.get("code") for r in rows if r.get("kind") == "remind"}
@@ -358,9 +358,12 @@ def main():
     text = "\n".join(hints[:MAX_LINES])
     if len(text) > MAX_CHARS:
         text = text[:MAX_CHARS - 1].rstrip() + "…"
-    print(json.dumps({
-        "hookSpecificOutput": {"hookEventName": "Stop", "additionalContext": text}
-    }, ensure_ascii=False))
+    if is_agy():
+        emit_context([text])
+    else:
+        print(json.dumps({
+            "hookSpecificOutput": {"hookEventName": "Stop", "additionalContext": text}
+        }, ensure_ascii=False))
 
 
 if __name__ == "__main__":

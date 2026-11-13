@@ -31,12 +31,15 @@ import json
 import os
 import sys
 
-_SCRIPTS_DIR = os.path.normpath(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "scripts")
-)
-sys.path.insert(0, _SCRIPTS_DIR)
+_HOOKS_DIR = os.path.dirname(os.path.abspath(__file__))
+_SCRIPTS_DIR = os.path.normpath(os.path.join(_HOOKS_DIR, "..", "..", "scripts"))
+if _HOOKS_DIR not in sys.path:
+    sys.path.insert(0, _HOOKS_DIR)
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
 import utf8_io  # noqa: E402,F401 — imported for its side effect: stdout/stderr become UTF-8
 
+from _common import TERMINAL_STOP_REASONS, extract_workspace_path  # noqa: E402
 from tdq_state import (  # noqa: E402
     effective_phase, load, log_enabled, now_iso, plan_tick_state, repo_status_digest,
     repo_status_paths, sha256_file, today_log_rel,
@@ -62,6 +65,9 @@ def _cwd_of(payload):
             value = payload.get(key)
             if isinstance(value, str) and value.strip():
                 return value
+        ws_path = extract_workspace_path(payload)
+        if ws_path:
+            return ws_path
     return os.getcwd()
 
 
@@ -168,6 +174,8 @@ def main():
         payload = json.load(sys.stdin)
     except (ValueError, UnicodeDecodeError):
         payload = {}
+    if isinstance(payload, dict) and str(payload.get("terminationReason") or "") in TERMINAL_STOP_REASONS:
+        return
     cwd = _cwd_of(payload)
     state = load(cwd)
     if not isinstance(state, dict) or not state.get("active_request"):

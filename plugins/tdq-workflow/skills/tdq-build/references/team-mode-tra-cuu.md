@@ -63,3 +63,7 @@ prints one `[TDQ:WORKTREE]` line for as long as that is true.
    - WRONG: delegate all three tasks needing that constant in parallel — each sub-agent invents its
      own name, and only the merge reveals three mismatched versions.
 
+## Dynamic Model Tier Routing
+
+Subagent defaults to `model: inherit` (`effort: high`). When the host supports explicit model selection, the leader may override `model` per task complexity (for example lighter tiers on mechanical tasks or stronger tiers on heavy math, security, or core modules). Never hard-locked.
+

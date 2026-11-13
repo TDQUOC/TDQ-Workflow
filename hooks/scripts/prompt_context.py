@@ -15,8 +15,9 @@ import os
 import re
 import sys
 
-from _common import (already_reminded, approve_hint, payload_cwd, plan_mode,
-                     read_payload, session_id)
+from _common import (_shard_turn_path, already_reminded, approve_hint,
+                     detect_subagent, emit_context, flush_pending_reminders,
+                     is_agy, payload_cwd, plan_mode, read_payload, session_id)
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
 from tdq_state import (MODE_ALIASES, effective_lane,  # noqa: E402
@@ -219,8 +220,8 @@ def _nhac_worktree(cwd):
     except Exception:
         return
     if mo:
-        print(lenh_cho_project(f"[TDQ:WORKTREE] {len(mo)} worktree(s) still open — run: "
-                                         "python3 scripts/tdq_team.py sweep", cwd))
+        emit_context([lenh_cho_project(f"[TDQ:WORKTREE] {len(mo)} worktree(s) still open — run: "
+                                       "python3 scripts/tdq_team.py sweep", cwd)])
 
 
 def _nhac_gon(cwd, state, payload, session):
@@ -243,12 +244,35 @@ def _nhac_gon(cwd, state, payload, session):
     turn_log_append(cwd, "remind", session=session, code=MA_GON,
                     event="UserPromptSubmit", muc_gat=muc,
                     so_dong=len(dong.splitlines()))
-    print(dong)
+    emit_context([dong])
+
+
+def _agy_pre_invocation_hook(payload, cwd):
+    sid = session_id(payload)
+    queued = flush_pending_reminders(cwd, sid)
+    if queued:
+        emit_context(queued)
+    sub = detect_subagent(payload, cwd)
+    if sub.get("is_subagent"):
+        return True
+    shard = _shard_turn_path(cwd, sid)
+    if os.path.isfile(shard):
+        try:
+            os.remove(shard)
+        except OSError:
+            pass
+    prompt = str(payload.get("prompt") or payload.get("user_message") or "")
+    low = prompt.lower()
+    if any(k in low for k in ("lỗi", "bug", "sửa lại", "broken", "fail", "không chạy", "sai rồi")):  # i18n-allow
+        emit_context(["[TDQ:FEEDBACK] User reported bug/feedback: run `py -3 scripts/tdq_state.py hotfix <slug>` or open express fix cycle before editing."])
+    return False
 
 
 def main():
     payload = read_payload()
     cwd = payload_cwd(payload)
+    if is_agy() and _agy_pre_invocation_hook(payload, cwd):
+        return
     sid = session_id(payload)
     turn_log_clear(cwd, sid)
     # Start-of-turn disk snapshot — so stop_gate can tell at end of turn what REALLY changed,
@@ -395,7 +419,7 @@ def _nhac_qc(cwd, state, payload, session):
     )
     turn_log_append(cwd, "remind", session=session, code=ma_qc,
                     event="UserPromptSubmit", so_dong=1)
-    print(dong)
+    emit_context([dong])
 
 
 def _truncate(text, limit=MAX_CHARS):
@@ -423,14 +447,14 @@ def _emit(cwd, session, lines, critical=False):
     # command is a command the agent cannot run.
     text = lenh_cho_project(_truncate("\n".join(lines[:MAX_LINES])), cwd)
     if critical:
-        print(text)
+        emit_context([text])
         return
     digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
     if prompt_context_last(cwd, session) == digest:
         text = _compact(text)
     else:
         prompt_context_save(cwd, session, digest)
-    print(text)
+    emit_context([text])
 
 
 if __name__ == "__main__":

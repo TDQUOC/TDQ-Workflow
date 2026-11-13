@@ -310,7 +310,7 @@ def turn_log_path(cwd):
 
 _MISSING = object()
 PRUNE_DIRS = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build",
-              ".next", "target", ".pytest_cache", ".idea", ".claude"}
+              ".next", "target", ".pytest_cache", ".idea", ".claude", ".gemini", ".agents", ".tdq-worktrees"}
 
 
 # ---------------------------------------------------------------- log service
@@ -506,12 +506,20 @@ def ghi_moc_phase(state, phase, at=None):
 
 
 def _atomic_write(path, text):
+    import time as _time
     os.makedirs(os.path.dirname(path), exist_ok=True)
     fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path), prefix=".tdq-", suffix=".tmp")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
             f.write(text)
-        os.replace(tmp, path)
+        for attempt in range(5):
+            try:
+                os.replace(tmp, path)
+                break
+            except PermissionError:
+                if attempt == 4:
+                    raise
+                _time.sleep(0.015 * (2 ** attempt))
     finally:
         if os.path.exists(tmp):
             try:
@@ -2961,6 +2969,9 @@ def cli(argv):
     if cmd == "diagram":
         _fail(LOI_SO_DO_DA_GO)
 
+    if cmd == "hotfix":
+        return _cli_hotfix(cwd, argv[1:])
+
     if cmd == "reset":
         argv, want_json = _pop_json_flag(argv)
         state = default_state()
@@ -2969,6 +2980,45 @@ def cli(argv):
         return
 
     _fail(f"Invalid command: {cmd}")
+
+
+def _cli_hotfix(cwd, rest):
+    """Open or pivot into a fast hotfix/feedback express implementation cycle."""
+    rest, want_json = _pop_json_flag(list(rest))
+    tier = "nho"
+    by = ""
+    positional = []
+    i = 0
+    while i < len(rest):
+        if rest[i] == "--tier" and i + 1 < len(rest):
+            tier = rest[i + 1].strip()
+            i += 2
+        elif rest[i] == "--by" and i + 1 < len(rest):
+            by = rest[i + 1].strip()
+            i += 2
+        else:
+            positional.append(rest[i])
+            i += 1
+    state = load(cwd) or default_state()
+    slug = positional[0] if positional else (state.get("active_request") or "")
+    if not slug:
+        _fail("hotfix requires a slug or an active_request.")
+    if parse_slug(slug) is None:
+        _fail(f"Malformed slug: {slug}. Formula: {SLUG_FORMULA}")
+    stamp = state.get("updated_at")
+    state["active_request"] = slug
+    state["lane"] = "quick"
+    state["loai_request"] = "hotfix"
+    state["quick_approved"] = True
+    state["quick_approved_at"] = now_iso()
+    state["quick_approved_by"] = (by or f"hotfix tier={tier}")[:BY_MAX]
+    state["implement_mode"] = state.get("implement_mode") or "main"
+    state["phase"] = "implement"
+    state["started_at"] = state.get("started_at") or now_iso()
+    ghi_moc_phase(state, "implement")
+    save(cwd, state, expect_updated_at=stamp)
+    _info(f"hotfix opened: slug={slug} tier={tier} phase=implement")
+    _echo_state("hotfix", state, want_json)
 
 
 if __name__ == "__main__":

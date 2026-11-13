@@ -71,7 +71,7 @@ class SinhAgyTest(unittest.TestCase):
             du_lieu = json.load(f)
         lenh = [h["command"]
                 for muc in du_lieu["hooks"].values()
-                for nhom in muc for h in nhom["hooks"]]
+                for nhom in muc for h in nhom.get("hooks", [nhom])]
         self.assertTrue(lenh, "hooks.json không khai lệnh nào")
         for c in lenh:
             with self.subTest(lenh=c[:40]):

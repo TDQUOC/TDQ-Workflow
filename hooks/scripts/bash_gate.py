@@ -16,7 +16,9 @@ import re
 
 from _common import (
     block,
+    detect_subagent,
     echo_line,
+    is_agy,
     observe,
     payload_cwd,
     read_payload,
@@ -119,12 +121,42 @@ def _clean(raw):
     return raw.strip("'\"")
 
 
+_PS_WRITE_PATTERN = re.compile(
+    r"(?:Set-Content|Add-Content|Out-File|Copy-Item|Move-Item|Remove-Item|New-Item)\b",
+    re.IGNORECASE,
+)
+
+
+def _enforce_agy_bash_guards(payload, cwd):
+    info = detect_subagent(payload, cwd)
+    agy = is_agy()
+    if not agy and not info.get("is_subagent"):
+        return False
+    cmd = str((payload.get("tool_input") or {}).get("command") or "")
+    role = (info.get("role") or "").lower()
+    if any(r in role for r in ("reviewer", "browser")) and (
+        ">" in cmd or _PS_WRITE_PATTERN.search(cmd) or any(w in cmd for w in ("tee ", "sed -i", "rm ", "mv "))
+    ):
+        block(cwd, payload, "READONLY", [f"Read-only subagent `{role}` cannot mutate files via shell."])
+        return True
+    norm_cmd = cmd.replace("\\", "/")
+    if agy and _PS_WRITE_PATTERN.search(cmd) and ("docs/tdq/state.json" in norm_cmd or "docs/tdq/STATE.md" in norm_cmd):
+        block(cwd, payload, "GATE", ["Do not mutate TDQ state via PowerShell; use tdq_state.py CLI."])
+        return True
+    if agy and re.search(r"git\s+(?:checkout\s+-[bB]|switch\s+-[cC]|branch)\s+['\"]?(?:claude|antigravity|gemini|codex)[-_]", cmd, re.IGNORECASE):
+        block(cwd, payload, "TDQ:GIT", ["AI-prefixed branch names are banned; name the branch after the work."])
+        return True
+    return False
+
+
 def main():
     payload = read_payload()
     cmd = (payload.get("tool_input") or {}).get("command") or ""
     if not isinstance(cmd, str) or not cmd:
         return
     cwd = payload_cwd(payload)
+    if _enforce_agy_bash_guards(payload, cwd):
+        return
     rows = turn_rows(cwd, payload)  # P0-3: read once, reused by every check below
     state = __import__("tdq_state").load(cwd) or {}
     parts = [part.strip() for part in re.split(r"[;&]", cmd) if part.strip()]

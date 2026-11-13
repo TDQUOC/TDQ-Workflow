@@ -99,6 +99,19 @@ class TestAgyPreToolUseDeny(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertEqual(parsed(out), {})
 
+    def test_deny_worktree_add_with_banned_name_windows_backslash(self):
+        _, out, _ = agy("agy_pretooluse_gate.py",
+                         {"tool_input": {"command": r"git worktree add ..\claude-wt"}})
+        data = parsed(out)
+        self.assertEqual(data.get("decision"), "deny")
+
+    def test_deny_protojson_toolcall_args_commandline(self):
+        _, out, _ = agy("agy_pretooluse_gate.py", {
+            "toolCall": {"name": "run_command", "args": {"CommandLine": "git checkout -b gemini-x"}}
+        })
+        data = parsed(out)
+        self.assertEqual(data.get("decision"), "deny")
+
     def test_allow_empty_payload_no_crash(self):
         rc, out, _ = agy("agy_pretooluse_gate.py", {})
         self.assertEqual(rc, 0)
@@ -195,6 +208,20 @@ class TestAgyStopGate(StopBase):
         rc, out, _ = agy("agy_stop_gate.py", {"workingDirectory": self.cwd})
         self.assertEqual(rc, 0)
         self.assertEqual(parsed(out), {})
+
+    def test_workspace_paths_resolved_and_terminal_stop_silent(self):
+        write_state(self.cwd, active_request="r1", lane="full", phase="implement",
+                    plan_file="docs/tdq/plan/p.md")
+        self.plan("docs/tdq/plan/p.md", PLAN_ONE_OPEN)
+        rc1, out1, _ = agy("agy_stop_gate.py", {"workspacePaths": [self.cwd]})
+        self.assertEqual(rc1, 0)
+        self.assertEqual(parsed(out1).get("decision"), "continue")
+        rc2, out2, _ = agy("agy_stop_gate.py", {
+            "workspacePaths": [self.cwd],
+            "terminationReason": "USER_CANCELED",
+        })
+        self.assertEqual(rc2, 0)
+        self.assertEqual(parsed(out2), {})
 
     def test_no_crash_on_malformed_stdin(self):
         # Truly broken JSON on stdin (not just an empty payload) — run with an explicit `cwd`

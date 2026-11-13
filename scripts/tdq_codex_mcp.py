@@ -91,6 +91,14 @@ def _nguon_lsp(claude_json):
     except (OSError, ValueError) as exc:
         return None, f"cannot read {claude_json} ({exc.__class__.__name__})"
     if not isinstance(muc, dict) or not muc.get("command"):
+        alt = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "mcp_config.json")
+        if os.path.isfile(alt):
+            try:
+                with open(alt, encoding="utf-8") as af:
+                    muc = (json.load(af).get("mcpServers") or {}).get("lsp")
+            except (OSError, ValueError):
+                muc = None
+    if not isinstance(muc, dict) or not muc.get("command"):
         return None, f"{claude_json} has no mcpServers.lsp"
     return [muc["command"], *[str(a) for a in muc.get("args") or []]], ""
 

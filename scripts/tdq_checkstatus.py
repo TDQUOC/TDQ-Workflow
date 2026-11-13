@@ -44,7 +44,7 @@ CAN_USER = "CẦN USER QUYẾT"  # i18n-allow
 # can erase data. Here: exactly one command, exactly one key=value or one approval target,
 # and no shell character. A value holding the word "reset"/"init" is DATA and still passes.
 MAU_LENH_VA = re.compile(
-    r"^python3 scripts/tdq_state\.py "
+    r"^(?:python3|py -3) scripts/tdq_state\.py "
     r"(set [a-z_]+=\S+"
     r"|approve (spec|plan|quick)( --by \"[^\"]*\")?)$"
 )

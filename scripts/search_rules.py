@@ -15,6 +15,7 @@ them before EVERY shell command.
 """
 import re
 import shlex
+import sys
 
 # How many code searches one concept-layer query unlocks. Settled 2026-10-03 (T2.5) by REASON, not
 # by measurement, and said so: replaying the excalidraw session gave the same result for N = 5, 10,
@@ -28,7 +29,7 @@ CUA_SO = 10
 TOKEN = re.compile(r"[A-Za-z_][A-Za-z0-9_]{2,}")
 
 TIM_CODE, LOC_FILE, KHONG = "tim_code", "loc_file", "khong_phai_tim"
-CONG_CU_SHELL = {"bash", "powershell", "shell", "exec_command", "local_shell"}
+CONG_CU_SHELL = {"run_command", "bash", "powershell", "shell", "exec_command", "local_shell"}
 # Readiness stamp: `tdq_setup.khoi_tao_nen` writes it, the gate and session start read it.
 # One name for all three (T8.6); a relative path with "/" joins fine on every OS.
 MOC_SAN_SANG = "docs/tdq/.tdq-san-sang.json"
@@ -229,6 +230,7 @@ def _tach_script(s, do_sau=0, ngan_sach=None):
 
     ong_list, phan, buf, con = [], [], [], []
     ngoac, i, n = None, 0, len(s)
+    dquote_has_esc = False
 
     def het_phan():
         if buf:
@@ -258,7 +260,18 @@ def _tach_script(s, do_sau=0, ngan_sach=None):
                 ngoac = None
             i += 1
             continue
-        if c == "\\" and i + 1 < n:
+        in_dquote = (ngoac == '"')
+        win_trail_quote = (
+            sys.platform == "win32"
+            and in_dquote
+            and not dquote_has_esc
+            and i + 1 < n
+            and s[i + 1] == '"'
+            and (i + 2 == n or s[i + 2].isspace() or s[i + 2] in ";|&)")
+        )
+        if c == "\\" and i + 1 < n and not win_trail_quote:
+            if in_dquote and s[i + 1] == '"':
+                dquote_has_esc = True
             buf.append(s[i:i + 2])
             i += 2
             ngan_sach.tinh_cong_viec(1)
@@ -292,6 +305,8 @@ def _tach_script(s, do_sau=0, ngan_sach=None):
             continue
         if c in "'\"":
             ngoac = c
+            if c == '"':
+                dquote_has_esc = False
             buf.append(c)
         elif c == "#" and (i == 0 or s[i - 1].isspace()):
             j = s.find("\n", i)
@@ -341,6 +356,17 @@ def _tach_tu(phan, ngan_sach=None):
     try:
         return shlex.split(phan, posix=True)
     except ValueError:
+        if sys.platform == "win32":
+            fixed = re.sub(
+                r'([A-Za-z]:\\[^"\n]*?|\\[^"\n]*?)\\"($|[\s;|&)])',
+                lambda m: m.group(1) + '\\\\"' + m.group(2),
+                phan,
+            )
+            if fixed != phan:
+                try:
+                    return shlex.split(fixed, posix=True)
+                except ValueError:
+                    pass
         if ngan_sach:
             ngan_sach.la_malformed = True
         return [t.strip("'\"") for t in re.findall(r"\"[^\"]*\"?|'[^']*'?|\S+", phan)]
@@ -1123,6 +1149,40 @@ def doi_chieu_caller_oracle(tap_tim_thay, tap_chuan):
         "thieu": thieu,
         "du": du,
     }
+
+
+_ORIG_LA_GOI_KHAI_NIEM = la_goi_khai_niem
+_AGY_LSP_OPS = (
+    "go_to_definition", "find_symbol", "find_references", "find_callers",
+    "list_symbols", "open_document", "blast_radius", "get_diagnostics",
+    "start_lsp", "inspect_symbol", "explore",
+)
+
+
+def _agy_unwrap_tool(ten_tool, tool_input):
+    """Unwrap call_mcp_tool and normalize Antigravity single-underscore MCP names."""
+    ten = str(ten_tool or "")
+    inp = tool_input if isinstance(tool_input, dict) else {}
+    if ten == "call_mcp_tool":
+        srv = str(inp.get("ServerName") or inp.get("server") or "").lower()
+        tname = str(inp.get("ToolName") or inp.get("tool") or "")
+        if "lsp" in srv and tname:
+            return f"mcp__lsp__{tname}", inp.get("Arguments") or inp.get("arguments") or inp
+        if srv and tname:
+            return f"mcp__{srv}__{tname}", inp.get("Arguments") or inp.get("arguments") or inp
+    if ten.startswith("mcp_") and not ten.startswith("mcp__") and "_lsp_" in ten:
+        return f"mcp__lsp__{ten.rsplit('_lsp_', 1)[1]}", inp
+    return ten, inp
+
+
+def la_goi_khai_niem(ten_tool, tool_input):
+    ten, inp = _agy_unwrap_tool(ten_tool, tool_input)
+    res = _ORIG_LA_GOI_KHAI_NIEM(ten, inp)
+    if res:
+        return res
+    if re.match(r"^mcp_(?:[A-Za-z0-9_-]+_)?(?:graphify|txtai)_", ten):
+        return ten
+    return None
 
 
 

@@ -123,7 +123,9 @@ def xac_thuc_bai_hoc(duong_dan_hoac_noi_dung):
         # Tài liệu cũ không có frontmatter
         return True, "Legacy unverified knowledge", {"trang_thai": "legacy_unverified", "auto_policy": False}
 
-    trang_thai = metadata.get("trang_thai")
+    trang_thai = metadata.get("trang_thai") or metadata.get("status")
+    if trang_thai == "approved":
+        trang_thai = "reviewed"
     if not trang_thai or trang_thai not in TRANG_THAI_HOP_LE:
         return False, f"Invalid or missing trang_thai: {trang_thai!r} (must be one of {TRANG_THAI_HOP_LE})", metadata
 

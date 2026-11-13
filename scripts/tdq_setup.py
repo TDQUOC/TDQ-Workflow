@@ -522,6 +522,8 @@ def va_hook_xung_dot():
     Phiên bản plugin nằm trong đường dẫn cache, nên một lần update là hook cũ sống lại ở thư mục
     mới. Đó là lý do lệnh này tồn tại thay vì sửa tay một lần: nó chạy lại được, mỗi lần setup.
     """
+    if is_antigravity_host():
+        return [], []
     da_va, no = [], []
     for ten, tep, _matcher in tdq_lsp.hook_xung_dot():
         du_lieu = tdq_lsp._doc_json(tep)
@@ -786,7 +788,7 @@ def tu_dong_cap_nhat_plugin_user(home=None, goc_plugin=None, chay_lenh=None, cwd
         v_mkt = doc_phien_ban_plugin(mkt_dir)
         if v_mkt:
             nguon_list.append((v_mkt, mkt_dir))
-    if not nguon_list and GOC_REPO:
+    if not nguon_list and globals().get("GOC_REPO"):
         v_repo = doc_phien_ban_plugin(GOC_REPO)
         if v_repo:
             nguon_list.append((v_repo, GOC_REPO))
@@ -2013,6 +2015,28 @@ def main(argv, khai_codex=None):
     print("")
     print(f"Nợ: {len(no)} món ({so} dòng mới) → {tdq_no.FILE_NO}")
     return rc
+
+
+_ORIG_GHIM_HUONG_DAN = ghim_huong_dan_tool
+
+
+def is_antigravity_host():
+    """Return True when running inside Antigravity plugin/agent context."""
+    if os.environ.get("TDQ_HOST") == "antigravity":
+        return True
+    norm = os.path.abspath(__file__).replace("\\", "/").lower()
+    return any(m in norm for m in ("/.gemini/config/plugins/", "/plugins/tdq-workflow/", "/antigravity_portable/"))
+
+
+def _sync_agy_guard_ghim(duong, goc=None):
+    """Skip mutating ~/.claude/CLAUDE.md when running natively under Antigravity."""
+    if is_antigravity_host() and ".claude" in os.path.expanduser(str(duong)).lower():
+        _log("antigravity host: skipped ~/.claude/CLAUDE.md mutation")
+        return False
+    return _ORIG_GHIM_HUONG_DAN(duong, goc=goc)
+
+
+ghim_huong_dan_tool = _sync_agy_guard_ghim
 
 
 if __name__ == "__main__":

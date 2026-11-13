@@ -222,7 +222,7 @@ def rule_r2(doc, out):
         if doc.in_fence[i]:
             continue
         stripped = INLINE_CODE.sub("", line)
-        if "python3" not in stripped and "tdq_state.py" not in stripped:
+        if "python3" not in stripped and "py -3" not in stripped and "tdq_state.py" not in stripped:
             continue
         if line.lstrip().startswith("|"):
             continue

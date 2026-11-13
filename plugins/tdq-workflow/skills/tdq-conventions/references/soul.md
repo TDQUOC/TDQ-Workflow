@@ -3,7 +3,7 @@
   Table of contents=12-20 · The four principles=21-22 · 1. What the harness is for=23-29 ·
   2. Priority order: chất lượng > runtime > context cost=30-46 ·
   3. Write for the weakest model=47-55 · 4. Scope=56-67 · When it applies=68-76 · What to do=77-97 ·
-  Which tier a law belongs to=98-117 · Clean Code Invariants=118-133 · Self-check=134
+  Which tier a law belongs to=98-117 · Clean Code Invariants=118-139 · Self-check=140
 -->
 
 Soul stands above every other law in the workflow. A law that contradicts soul — old or new —

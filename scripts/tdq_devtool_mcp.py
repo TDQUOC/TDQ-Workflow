@@ -139,25 +139,34 @@ def check_devtool_setup(claude_json_path=None, settings_json_path=None) -> dict:
     c_json = claude_json_path or os.path.expanduser("~/.claude.json")
     s_json = settings_json_path or os.path.expanduser("~/.claude/settings.json")
 
-    # 1. Check MCP registration
+    # 1. Check MCP registration & AGY plugin manifest
+    plugin_mcp = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "mcp_config.json")
     mcp_registered = False
+    permission_allowed = False
+    if os.path.isfile(plugin_mcp):
+        try:
+            with open(plugin_mcp, encoding="utf-8") as pf:
+                mcp_registered = DEVTOOL_SERVER_NAME in (json.load(pf).get("mcpServers") or {})
+                if mcp_registered:
+                    permission_allowed = True
+        except (OSError, ValueError):
+            pass
     if os.path.isfile(c_json):
         try:
             with open(c_json, encoding="utf-8") as f:
                 data = json.load(f)
                 servers = data.get("mcpServers", {})
-                mcp_registered = DEVTOOL_SERVER_NAME in servers
+                mcp_registered = mcp_registered or (DEVTOOL_SERVER_NAME in servers)
         except (OSError, ValueError):
             pass
 
     # 2. Check Permission allow list
-    permission_allowed = False
     if os.path.isfile(s_json):
         try:
             with open(s_json, encoding="utf-8") as f:
                 data = json.load(f)
                 allows = data.get("permissions", {}).get("allow", [])
-                permission_allowed = any(
+                permission_allowed = permission_allowed or any(
                     "chrome-devtools" in a or "chrome_devtools" in a for a in allows
                 )
         except (OSError, ValueError):

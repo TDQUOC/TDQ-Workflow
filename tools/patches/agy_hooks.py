@@ -70,7 +70,7 @@ def _parse_event_flag(argv=None):
 def _is_antigravity_payload(raw):
     if _RUNTIME_STATE["event"]:
         return True
-    if os.environ.get("TDQ_HOST") == "antigravity" or os.environ.get("ANTIGRAVITY_AGENT"):
+    if os.environ.get("TDQ_HOST") == "antigravity":
         return True
     if not isinstance(raw, dict):
         return False
@@ -78,6 +78,11 @@ def _is_antigravity_payload(raw):
         return True
     tname = str(raw.get("tool_name") or raw.get("toolName") or "")
     return tname in _AGY_TOOLS or (tname.startswith("mcp_") and not tname.startswith("mcp__"))
+
+
+def is_agy():
+    """Return True when the active hook invocation uses Antigravity protocol."""
+    return bool(_RUNTIME_STATE["is_agy"])
 
 
 def _unwrap_call_mcp(tool_name, tool_input):
@@ -167,8 +172,10 @@ def _flush_agy_stdout():
     if _RUNTIME_STATE["deny_reason"]:
         reason = _RUNTIME_STATE["deny_reason"]
         payload = {
+            "allow_tool": False,
             "decision": "deny",
             "reason": reason,
+            "message": reason,
             "hookSpecificOutput": {
                 "hookEventName": "PreToolUse",
                 "permissionDecision": "deny",
@@ -232,6 +239,55 @@ def _runtime_dir(cwd):
 
 def _shard_turn_path(cwd, conv_id):
     return os.path.join(_runtime_dir(cwd), f"turns-{conv_id}.jsonl")
+
+
+def with_ntfs_lock(lock_path, attempts=200):
+    """Context manager yielding lock state using NTFS msvcrt locking when on Windows."""
+    import contextlib as _ctx
+
+    @_ctx.contextmanager
+    def _mgr():
+        parent = os.path.dirname(lock_path)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+        lf, locked = None, False
+        for attempt in range(attempts):
+            try:
+                if os.name == "nt":
+                    import msvcrt
+                    lf = open(lock_path, "a+b")
+                    lf.seek(0)
+                    msvcrt.locking(lf.fileno(), msvcrt.LK_NBLCK, 1)
+                    locked = True
+                break
+            except OSError:
+                if lf is not None:
+                    try:
+                        lf.close()
+                    except OSError:
+                        pass
+                    lf = None
+                if attempt == attempts - 1:
+                    yield False
+                    return
+                time.sleep(min(0.02, 0.002 * (attempt % 10 + 1)))
+        try:
+            yield True
+        finally:
+            if lf is not None:
+                if locked and os.name == "nt":
+                    import msvcrt
+                    try:
+                        lf.seek(0)
+                        msvcrt.locking(lf.fileno(), msvcrt.LK_UNLCK, 1)
+                    except OSError:
+                        pass
+                try:
+                    lf.close()
+                except OSError:
+                    pass
+
+    return _mgr()
 
 
 def _lock_and_append_jsonl(path, row):
@@ -590,7 +646,13 @@ if __name__ == "__main__":
 
 def apply_all(hooks_scripts_dir: Path) -> None:
     """Write dual-protocol _common.py, new AGY hooks, and upgrade all existing hook gates."""
-    write_utf8(hooks_scripts_dir / "_common.py", COMMON_PY)
+    common_path = hooks_scripts_dir / "_common.py"
+    if common_path.is_file() and "AGY_CODES = (" in read_utf8(common_path):
+        c_text = read_utf8(common_path)
+        c_text = re.sub(r"^CODES\s*=\s*\([^\)]+\)", "CODES = AGY_CODES", c_text, count=1, flags=re.M | re.S)
+        write_utf8(common_path, c_text)
+    else:
+        write_utf8(common_path, COMMON_PY)
     write_utf8(hooks_scripts_dir / "post_invocation.py", POST_INVOCATION_PY)
     write_utf8(hooks_scripts_dir / "subagent_dispatch_gate.py", SUBAGENT_DISPATCH_GATE_PY)
 
@@ -846,7 +908,7 @@ def _agy_pre_invocation_hook(payload, cwd):
     # Patch read_gate.py -> queue reminder via _common.remind_force on AGY instead of raw hookSpecificOutput
     rg_path = hooks_scripts_dir / "read_gate.py"
     rg_text = read_utf8(rg_path)
-    if "_RUNTIME_STATE" not in rg_text:
+    if "_RUNTIME_STATE" not in rg_text and "_common.is_agy()" not in rg_text:
         old_rg_tail = (
             '    print(_common.json.dumps({\n'
             '        "hookSpecificOutput": {\n'

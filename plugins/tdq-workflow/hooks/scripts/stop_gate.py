@@ -27,7 +27,7 @@ import utf8_io  # noqa: E402,F401
 import json
 import os
 
-from _common import emit_context, payload_cwd, read_payload, stop_block, turn_rows
+from _common import TERMINAL_STOP_REASONS, emit_context, is_agy, payload_cwd, read_payload, stop_block, turn_rows
 # Keep this AFTER `from _common`: `_common` is what injects `scripts/` into sys.path. Use a
 # from-import (not module attribute access) so graphify can emit the cross-file `calls` edge.
 from tdq_state import (BOOKKEEPING_PATHS, _TASK_LINE, _info, _warn,  # noqa: E402
@@ -244,22 +244,28 @@ def _chan_chua_xong(cwd, state, payload=None):
         # Nothing has moved for MAX_STREAK stops in a row: blocking again would only trap the
         # session. Step down to a hint and let the turn end.
         _info(f"stop_gate: TDQ:UNFINISHED stepped down after {dem - 1} block(s) with no progress")
-        print(json.dumps({"hookSpecificOutput": {
-            "hookEventName": "Stop",
-            "additionalContext": (f"[TDQ:STUCK] {task_open_count(cwd)} open task(s).{next_step} "
-                                  "Finish plan or declare a genuine blocker with "
-                                  "`tdq_state.py pause --loai <kind> --ly-do \"<why>\"`."),
-        }}, ensure_ascii=False))
+        stuck_msg = (f"[TDQ:STUCK] {task_open_count(cwd)} open task(s).{next_step} "
+                     "Finish plan or declare a genuine blocker with "
+                     "`tdq_state.py pause --loai <kind> --ly-do \"<why>\"`.")
+        if is_agy():
+            emit_context([stuck_msg])
+        else:
+            print(json.dumps({"hookSpecificOutput": {
+                "hookEventName": "Stop",
+                "additionalContext": stuck_msg,
+            }}, ensure_ascii=False))
         return True
     _info(f"stop_gate: block TDQ:UNFINISHED · phase=implement · open={task_open_count(cwd)} "
           f"· plan={tick.get('path')} · streak={dem}")
     reason = (reason + next_step)[:MAX_CHARS]
-    stop_block(cwd, payload or {}, reason, code="TDQ:UNFINISHED")
+    stop_block(cwd, payload or {}, reason, code="TDQ:UNFINISHED", stop_hook_active=False)
     return True
 
 
 def main():
     payload = read_payload()
+    if str(payload.get("terminationReason") or "") in TERMINAL_STOP_REASONS:
+        return
     # Claude Code sets this flag after a block, as loop protection. The two older gates
     # honour it; the [TDQ:UNFINISHED] gate must not, or a single stop would end the run
     # with the plan half done — which is the whole defect it exists to close.
@@ -321,9 +327,10 @@ def main():
                 and tick["sha"] == snap["plan_sha"]:
             _info(f"stop_gate: block TDQ:TICK · source={source} · path={culprit} "
                   f"· plan={tick['path']} · checkboxes unchanged during the turn")
-            stop_block(cwd, payload, ("[TDQ:TICK] This turn edited code but the plan checkboxes did not change. "
-                                      "Open the plan, mark [~] the task in progress and [x] the ones done (task by task). "
-                                      "Then reprint the last chat block VERBATIM — no summarising."), code="TDQ:TICK")
+            reason = ("[TDQ:TICK] This turn edited code but the plan checkboxes did not change. "
+                      "Open the plan, mark [~] the task in progress and [x] the ones done (task by task). "
+                      "Then reprint the last chat block VERBATIM — no summarising.")
+            stop_block(cwd, payload, reason, code="TDQ:TICK")
             return
 
     # Third block point: the turn is ending while the plan still has open tasks. Unlike the
@@ -358,9 +365,12 @@ def main():
     text = "\n".join(hints[:MAX_LINES])
     if len(text) > MAX_CHARS:
         text = text[:MAX_CHARS - 1].rstrip() + "…"
-    print(json.dumps({
-        "hookSpecificOutput": {"hookEventName": "Stop", "additionalContext": text}
-    }, ensure_ascii=False))
+    if is_agy():
+        emit_context([text])
+    else:
+        print(json.dumps({
+            "hookSpecificOutput": {"hookEventName": "Stop", "additionalContext": text}
+        }, ensure_ascii=False))
 
 
 if __name__ == "__main__":

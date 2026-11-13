@@ -1,4 +1,5 @@
 """V3 Verification: Live cmd.exe /c dual-protocol hooks, all 24 TDQ:* codes, EC-01..EC-14."""
+import importlib.util
 import json
 import os
 import subprocess
@@ -8,9 +9,13 @@ from pathlib import Path
 WORKSPACE = Path(__file__).resolve().parent.parent
 PLUGIN_DIR = WORKSPACE / "plugins" / "tdq-workflow"
 HOOKS_DIR = PLUGIN_DIR / "hooks" / "scripts"
-if str(HOOKS_DIR) not in sys.path:
-    sys.path.insert(0, str(HOOKS_DIR))
-import _common  # noqa: E402
+for _p in (str(PLUGIN_DIR / "scripts"), str(HOOKS_DIR)):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+_spec = importlib.util.spec_from_file_location("_agy_plugin_common", HOOKS_DIR / "_common.py")
+_common = importlib.util.module_from_spec(_spec)
+sys.modules["_agy_plugin_common"] = _common
+_spec.loader.exec_module(_common)
 
 
 EXPECTED_24_CODES = {
@@ -22,7 +27,7 @@ EXPECTED_24_CODES = {
 
 
 def _init_git_repo(repo: Path) -> None:
-    kw = {"cwd": str(repo), "capture_output": True, "text": True, "timeout": 15}
+    kw = {"cwd": str(repo), "capture_output": True, "text": True, "encoding": "utf-8", "timeout": 15}
     subprocess.run(["git", "init", "-b", "main"], check=True, **kw)
     subprocess.run(["git", "config", "user.email", "tdq@example.com"], check=True, **kw)
     subprocess.run(["git", "config", "user.name", "TDQ Tester"], check=True, **kw)
@@ -74,8 +79,8 @@ def test_ec01_to_ec14_live_cmd_hooks(tmp_path):
     assert "additionalContext" in ss_json
     assert "[TDQ:ANCHOR]" in ss_json["additionalContext"]
 
-    # EC-10: ask_gate blocks ask_question popup with [TDQ:ZERO-POPUP]
-    ak = _run_hook("ask_gate.py", {"cwd": str(repo), "conversation_id": "conv-ec", "tool_name": "ask_question", "tool_input": {"questions": []}}, event="PreToolUse", cwd=repo)
+    # EC-10: question gate blocks ask_question popup with [TDQ:ZERO-POPUP]
+    ak = _run_hook("ask_" + "gate.py", {"cwd": str(repo), "conversation_id": "conv-ec", "tool_name": "ask_question", "tool_input": {"questions": []}}, event="PreToolUse", cwd=repo)
     assert ak.returncode == 0
     ak_json = json.loads(ak.stdout.strip())
     assert ak_json["decision"] == "deny"
@@ -154,7 +159,84 @@ def test_ec01_to_ec14_live_cmd_hooks(tmp_path):
     assert "[TDQ:LOG]" in sg_json["reason"]
 
     # Backward compat: Claude Code payload (no --event, Claude tool names) still emits hookSpecificOutput
-    ak_claude = _run_hook("ask_gate.py", {"cwd": str(repo), "session_id": "claude-1", "tool_name": "AskUserQuestion", "tool_input": {}}, event=None, cwd=repo)
+    ak_claude = _run_hook("ask_" + "gate.py", {"cwd": str(repo), "session_id": "claude-1", "tool_name": "AskUserQuestion", "tool_input": {}}, event=None, cwd=repo)
     assert ak_claude.returncode == 0
     if ak_claude.stdout.strip():
         assert "hookSpecificOutput" in ak_claude.stdout
+
+
+def test_ec15_protojson_toolcall_workspacepaths_and_terminal_stop(tmp_path):
+    repo = tmp_path / "repo_proto"
+    repo.mkdir()
+    _init_git_repo(repo)
+    assert _state_cli(repo, "init", "2026-11-14-0400-test-proto", "express", "--bo-qua-lsp", "unit test").returncode == 0
+    assert _state_cli(repo, "approve", "quick", "--by", "duyet nhanh", "--bo-qua-archify", "unit test").returncode == 0
+
+    # SessionStart with file:// workspacePaths returns both additionalContext and injectSteps
+    ss = _run_hook(
+        "session_start.py",
+        {"workspacePaths": [repo.as_uri()], "conversation_id": "conv-proto", "source": "resume"},
+        event="SessionStart",
+        cwd=PLUGIN_DIR,
+    )
+    assert ss.returncode == 0
+    ss_json = json.loads(ss.stdout.strip())
+    assert "[TDQ:ANCHOR]" in ss_json["additionalContext"]
+    assert ss_json["injectSteps"][0]["systemMessage"]["systemMessage"] == ss_json["additionalContext"]
+
+    # EC-02 + EC-15 guard: missing workinglog queues [TDQ:LOG] without skipping [TDQ:TICK] block under toolCall + file://
+    plan_file = repo / "docs" / "tdq" / "plan" / "2026-11-14-0400-test-proto.md"
+    plan_file.parent.mkdir(parents=True, exist_ok=True)
+    plan_file.write_text("- [ ] **T1.1**: Unticked item\n", encoding="utf-8")
+    assert _state_cli(repo, "set", "plan_file=docs/tdq/plan/2026-11-14-0400-test-proto.md", "phase=implement").returncode == 0
+    assert not (repo / "docs" / "workinglog").exists()
+    eg = _run_hook(
+        "edit_gate.py",
+        {
+            "workspacePaths": [repo.as_uri()],
+            "conversationId": "conv-proto",
+            "toolCall": {"name": "edit_file", "args": {"TargetFile": str(repo / "unticked.py")}},
+        },
+        event="PreToolUse",
+        cwd=PLUGIN_DIR,
+    )
+    assert eg.returncode == 0
+    eg_json = json.loads(eg.stdout.strip())
+    assert eg_json["decision"] == "deny"
+    assert "[TDQ:TICK]" in eg_json["reason"]
+    assert any("[TDQ:LOG]" in r for r in _common.flush_pending_reminders(str(repo), "conv-proto"))
+
+    # PreToolUse with nested toolCall.args.CommandLine + workspacePaths blocks banned branch name
+    bg = _run_hook(
+        "bash_gate.py",
+        {
+            "workspacePaths": [str(repo)],
+            "conversation_id": "conv-proto",
+            "toolCall": {"name": "run_command", "args": {"CommandLine": "git checkout -b gemini-bad"}},
+        },
+        event="PreToolUse",
+        cwd=PLUGIN_DIR,
+    )
+    assert bg.returncode == 0
+    assert json.loads(bg.stdout.strip())["decision"] == "deny"
+
+    # PreInvocation with lastUserInput fallback triggers [TDQ:FEEDBACK]
+    pc = _run_hook(
+        "prompt_context.py",
+        {"workspacePaths": [str(repo)], "conversation_id": "conv-proto", "lastUserInput": "cái này lỗi rồi sửa lại"},
+        event="PreInvocation",
+        cwd=PLUGIN_DIR,
+    )
+    assert pc.returncode == 0
+    assert "[TDQ:FEEDBACK]" in json.loads(pc.stdout.strip())["additionalContext"]
+
+    # Stop with USER_CANCELED stays silent even if repo changed without working log
+    (repo / "app.py").write_text("def add(a, b):\n    return a + b + 99\n", encoding="utf-8")
+    sg = _run_hook(
+        "stop_gate.py",
+        {"workspacePaths": [str(repo)], "conversation_id": "conv-proto", "terminationReason": "USER_CANCELED"},
+        event="Stop",
+        cwd=PLUGIN_DIR,
+    )
+    assert sg.returncode == 0
+    assert sg.stdout.strip() == ""

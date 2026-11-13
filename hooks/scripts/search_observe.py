@@ -118,7 +118,8 @@ def ghi_so(cwd, row):
     """Append one row; past the cap, rewrite keeping the newest half. Errors are swallowed."""
     duong = duong_so(cwd)
     dong = json.dumps(row, ensure_ascii=False) + "\n"
-    try:
+
+    def _write():
         os.makedirs(os.path.dirname(duong), exist_ok=True)
         try:
             with open(duong, "r", encoding="utf-8") as fh:
@@ -131,6 +132,13 @@ def ghi_so(cwd, row):
             return
         with open(duong, "a", encoding="utf-8") as fh:
             fh.write(dong)
+
+    try:
+        if _common.is_agy():
+            with _common.with_ntfs_lock(duong + ".lock"):
+                _write()
+        else:
+            _write()
     except OSError:
         pass
 
@@ -207,6 +215,8 @@ def main():
             if nhan:
                 ghi_so(cwd, {"ts": time.time(), "khoa": khoa, "loai": "khai_niem", "cong_cu": nhan})
                 _log(f"khai_niem · {nhan} · {khoa}")
+        elif su_kien == "PostToolUseFailure" and _common.is_agy():
+            _common.observe(cwd, payload, "tool_fail", tool=tool_name)
         sys.exit(0)
 
     # Fallback for events without explicit hook_event_name

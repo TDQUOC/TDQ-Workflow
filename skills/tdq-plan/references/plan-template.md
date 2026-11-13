@@ -1,6 +1,6 @@
 # The plan shape
 <!-- muc-luc-dong:
-  The minute estimate `(eNm)`=117
+  The minute estimate `(eNm)`=111
 -->
 
 Copy the whole block into `docs/tdq/plan/<slug>.md` and fill it in. File em:

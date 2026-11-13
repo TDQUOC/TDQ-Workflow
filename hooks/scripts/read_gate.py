@@ -95,7 +95,8 @@ def _ghi_so(cwd, row, rows):
     """Append one row; rewrite the whole ledger when it passes the cap. Errors are swallowed."""
     duong = _duong_so(cwd)
     dong = _common.json.dumps(row, ensure_ascii=False) + "\n"
-    try:
+
+    def _write():
         os.makedirs(os.path.dirname(duong), exist_ok=True)
         if len(rows) >= TRAN_DONG:
             giu = [_common.json.dumps(r, ensure_ascii=False) + "\n" for r in rows[-TRAN_DONG // 2:]]
@@ -104,6 +105,13 @@ def _ghi_so(cwd, row, rows):
             return
         with open(duong, "a", encoding="utf-8") as fh:
             fh.write(dong)
+
+    try:
+        if _common.is_agy():
+            with _common.with_ntfs_lock(duong + ".lock"):
+                _write()
+        else:
+            _write()
     except OSError:
         pass
 
@@ -115,8 +123,12 @@ def _vung(tool_input):
     reminder: a read that carries a range is an aimed read, even when the range repeats an old one.
     """
     try:
-        dau = int(tool_input.get("offset") or 0)
+        dau = int(tool_input.get("offset") or tool_input.get("StartLine") or 0)
         gioi_han = int(tool_input.get("limit") or 0)
+        if not gioi_han and tool_input.get("EndLine") is not None and dau:
+            end_line = int(tool_input.get("EndLine") or 0)
+            if end_line >= dau:
+                gioi_han = (end_line - dau) + 1
     except (TypeError, ValueError):
         return 0, 0
     if not dau and not gioi_han:
@@ -218,6 +230,8 @@ def main():
 
     ten = os.path.basename(duong)
     kb = so.st_size // 1024
+    if _common.is_agy():
+        _common.remind_force(cwd, payload, "READ", _tao_thong_diep(ten, kb, dau, cuoi, lap_count))
     print(_common.json.dumps({
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",

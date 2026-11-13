@@ -3,6 +3,7 @@ import copy
 import json
 from pathlib import Path
 import sys
+import tempfile
 import threading
 import time
 import uuid
@@ -246,7 +247,8 @@ def test_runtime_all_scenarios_use_real_processes_and_persist_proof(tmp_path):
     output = repo / "docs/tdq/artifacts/runtime-all.json"
     report = bench.runtime_smoke(repo, output, scenario_timeout=30)
     verified = bench.verify_report(output)
-    artifact = Path(__file__).resolve().parents[1] / "docs/tdq/artifacts/2026-10-27-1846-kiem-chung-tang-toc"
+    artifact = tmp_path / "diagnostic"
+    artifact.mkdir(parents=True, exist_ok=True)
     diagnostic = artifact / ("runtime-" + uuid.uuid4().hex[:8] + ".json")
     bench._write(diagnostic, {"schema": "tdq-runtime-test-attempt/v1", "verification": verified,
                              "report_digest": report["digest"], "facts": [bench._runtime_facts(row) for row in report["samples"]]})
@@ -287,6 +289,7 @@ class TestTdqRuntimeBenchAdapter(unittest.TestCase):
 
     def test_full_pytest_suite(self):
         test_file = str(Path(__file__).resolve())
-        ret = pytest.main(["-q", test_file, "-k", "not test_full_pytest_suite"])
+        with tempfile.TemporaryDirectory() as bt:
+            ret = pytest.main(["-q", f"--basetemp={bt}", test_file, "-k", "not test_full_pytest_suite"])
         self.assertEqual(ret, 0, "pytest benchmark suite failed")
 

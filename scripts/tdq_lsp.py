@@ -296,9 +296,21 @@ def bac1_binary():
 TUONG_DUONG_MCP = {"javascript": "typescript"}
 
 
+def _all_mcp_configs(duong="~/.claude.json"):
+    plugin_cfg = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "mcp_config.json")
+    if os.environ.get("TDQ_HOST") == "antigravity" or os.path.isfile(plugin_cfg):
+        return [duong, os.path.expanduser("~/.gemini/antigravity/mcp_config.json"), plugin_cfg]
+    return [duong]
+
+
 def mcp_args(duong="~/.claude.json"):
     """-> the `args` list of the `lsp` MCP server, or None when that server is not registered."""
-    server = (_doc_json(duong).get("mcpServers") or {}).get(MCP_SERVER_NAME)
+    server = None
+    for cand in _all_mcp_configs(duong):
+        s = (_doc_json(cand).get("mcpServers") or {}).get(MCP_SERVER_NAME)
+        if isinstance(s, dict):
+            server = s
+            break
     if not isinstance(server, dict):
         return None
     args = server.get("args")
@@ -315,11 +327,11 @@ def lang_mcp(args, lang):
 
 
 def bac2_mcp():
-    """Rung 2 — the `lsp` MCP server registered for Claude Code."""
-    cau_hinh = _doc_json("~/.claude.json")
-    servers = cau_hinh.get("mcpServers") or {}
-    if MCP_SERVER_NAME in servers:
-        return Bac(2, f"MCP `{MCP_SERVER_NAME}`", True, f"{len(servers)} server đã đăng ký")
+    """Rung 2 — the `lsp` MCP server registered for host."""
+    for cand in _all_mcp_configs():
+        servers = _doc_json(cand).get("mcpServers") or {}
+        if MCP_SERVER_NAME in servers:
+            return Bac(2, f"MCP `{MCP_SERVER_NAME}`", True, f"{len(servers)} server đã đăng ký")
     return Bac(2, f"MCP `{MCP_SERVER_NAME}`", False,
                "chưa đăng ký trong ~/.claude.json", "agent-lsp init")
 
@@ -394,7 +406,7 @@ def _chay_doctor(project):
     agent_lsp = shutil.which("agent-lsp")
     if not agent_lsp:
         return None, "không thấy agent-lsp trên PATH"
-    server = (_doc_json("~/.claude.json").get("mcpServers") or {}).get(MCP_SERVER_NAME) or {}
+    server = next(((_doc_json(c).get("mcpServers") or {}).get(MCP_SERVER_NAME) for c in _all_mcp_configs() if (_doc_json(c).get("mcpServers") or {}).get(MCP_SERVER_NAME)), {})
     args = [str(a) for a in (server.get("args") or []) if isinstance(a, str)]
     rc, out = _run([agent_lsp, "doctor"] + args, cwd=project, timeout=TIMEOUT_DOCTOR)
     parsed = doc_doctor(out)
@@ -454,6 +466,9 @@ def bac3_language_server(project):
 
 def bac4_quyen_tool():
     """Rung 4 — the mcp__lsp__* tools allowed without a prompt each time."""
+    plugin_cfg = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "mcp_config.json")
+    if MCP_SERVER_NAME in (_doc_json(plugin_cfg).get("mcpServers") or {}):
+        return Bac(4, f"quyền tool `{TOOL_PATTERN}*`", True, "Antigravity plugin mcp_config.json")
     cau_hinh = _doc_json("~/.claude/settings.json")
     allow = (cau_hinh.get("permissions") or {}).get("allow") or []
     khop = [m for m in allow if isinstance(m, str) and (TOOL_PATTERN in m or "mcp__plugin_tdq-workflow_lsp__" in m)]

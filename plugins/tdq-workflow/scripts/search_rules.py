@@ -13,15 +13,9 @@ them before EVERY shell command.
   -> deny; window of `cua_so` searches since the last concept query used up and guess-list shape
   -> deny; otherwise allow.
 """
-import os as _tdq_os, sys as _tdq_sys
-_tdq_here = _tdq_os.path.dirname(_tdq_os.path.abspath(__file__))
-_tdq_scripts = _tdq_os.path.normpath(_tdq_os.path.join(_tdq_here, '..', '..', 'scripts'))
-for _p in (_tdq_scripts, _tdq_here):
-    if _tdq_os.path.isdir(_p) and _p not in _tdq_sys.path:
-        _tdq_sys.path.insert(0, _p)
-import utf8_io  # noqa: E402,F401
 import re
 import shlex
+import sys
 
 # How many code searches one concept-layer query unlocks. Settled 2026-10-03 (T2.5) by REASON, not
 # by measurement, and said so: replaying the excalidraw session gave the same result for N = 5, 10,
@@ -236,6 +230,7 @@ def _tach_script(s, do_sau=0, ngan_sach=None):
 
     ong_list, phan, buf, con = [], [], [], []
     ngoac, i, n = None, 0, len(s)
+    dquote_has_esc = False
 
     def het_phan():
         if buf:
@@ -265,7 +260,18 @@ def _tach_script(s, do_sau=0, ngan_sach=None):
                 ngoac = None
             i += 1
             continue
-        if c == "\\" and i + 1 < n and not (os.name == "nt" and in_dquote and i + 1 < n and s[i + 1] == '"'):
+        in_dquote = (ngoac == '"')
+        win_trail_quote = (
+            sys.platform == "win32"
+            and in_dquote
+            and not dquote_has_esc
+            and i + 1 < n
+            and s[i + 1] == '"'
+            and (i + 2 == n or s[i + 2].isspace() or s[i + 2] in ";|&)")
+        )
+        if c == "\\" and i + 1 < n and not win_trail_quote:
+            if in_dquote and s[i + 1] == '"':
+                dquote_has_esc = True
             buf.append(s[i:i + 2])
             i += 2
             ngan_sach.tinh_cong_viec(1)
@@ -299,6 +305,8 @@ def _tach_script(s, do_sau=0, ngan_sach=None):
             continue
         if c in "'\"":
             ngoac = c
+            if c == '"':
+                dquote_has_esc = False
             buf.append(c)
         elif c == "#" and (i == 0 or s[i - 1].isspace()):
             j = s.find("\n", i)
@@ -348,6 +356,17 @@ def _tach_tu(phan, ngan_sach=None):
     try:
         return shlex.split(phan, posix=True)
     except ValueError:
+        if sys.platform == "win32":
+            fixed = re.sub(
+                r'([A-Za-z]:\\[^"\n]*?|\\[^"\n]*?)\\"($|[\s;|&)])',
+                lambda m: m.group(1) + '\\\\"' + m.group(2),
+                phan,
+            )
+            if fixed != phan:
+                try:
+                    return shlex.split(fixed, posix=True)
+                except ValueError:
+                    pass
         if ngan_sach:
             ngan_sach.la_malformed = True
         return [t.strip("'\"") for t in re.findall(r"\"[^\"]*\"?|'[^']*'?|\S+", phan)]
@@ -872,7 +891,7 @@ def quyet_dinh(pl, trang_thai):
 # Name shapes differ by host: Claude Code says `mcp__lsp__find_references`; Codex MCP names could
 # not be observed yet (Codex not logged in on the dev machine, 2026-10-03), so the match is on the
 # server name and the last segment. lumen `semantic_search` counted until 0.58.0.
-LSP = re.compile(r"^(?:mcp__(?:[^_]+_)?lsp__|mcp_(?:[A-Za-z0-9_-]+_)?lsp_|lsp\.)")
+LSP = re.compile(r"^(?:mcp__lsp__|mcp__plugin_tdq-workflow_lsp__|lsp\.)")
 # LSP tools that ASK a question about the code — an ALLOWLIST. The first version excluded a list
 # of housekeeping tools instead, which let `run_tests`, `apply_edit` or `format_document` count as
 # a concept query and unlock grep without a single question asked.
@@ -1132,9 +1151,6 @@ def doi_chieu_caller_oracle(tap_tim_thay, tap_chuan):
     }
 
 
-
-
-
 _ORIG_LA_GOI_KHAI_NIEM = la_goi_khai_niem
 _AGY_LSP_OPS = (
     "go_to_definition", "find_symbol", "find_references", "find_callers",
@@ -1154,9 +1170,8 @@ def _agy_unwrap_tool(ten_tool, tool_input):
             return f"mcp__lsp__{tname}", inp.get("Arguments") or inp.get("arguments") or inp
         if srv and tname:
             return f"mcp__{srv}__{tname}", inp.get("Arguments") or inp.get("arguments") or inp
-    for op in _AGY_LSP_OPS:
-        if ten.startswith("mcp_") and ten.endswith(f"_lsp_{op}"):
-            return f"mcp__lsp__{op}", inp
+    if ten.startswith("mcp_") and not ten.startswith("mcp__") and "_lsp_" in ten:
+        return f"mcp__lsp__{ten.rsplit('_lsp_', 1)[1]}", inp
     return ten, inp
 
 
@@ -1168,3 +1183,6 @@ def la_goi_khai_niem(ten_tool, tool_input):
     if re.match(r"^mcp_(?:[A-Za-z0-9_-]+_)?(?:graphify|txtai)_", ten):
         return ten
     return None
+
+
+

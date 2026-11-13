@@ -68,7 +68,7 @@ LY_DO_GIU = {
 }
 # Rule/hook file prefixes: a sub-agent editing these saws the plank the leader is
 # standing on — the leader has to do them itself.
-TIEN_TO_FILE_LUAT = ("skills/", "hooks/", "agents/", ".claude/", ".codex/",
+TIEN_TO_FILE_LUAT = ("skills/", "hooks/", "agents/", "rules/", ".claude/", ".codex/", ".agents/",
                      "CLAUDE.md", "AGENTS.md")
 # Branch/worktree name prefixes that are banned (CLAUDE.md §2).
 TEN_CAM = ("claude", "antigravity", "gemini", "codex")
@@ -801,7 +801,7 @@ def _git(cwd, *args, check=True):
     # a real run, never in tests using pure ASCII files.
     proc = None
     for attempt in range(3):
-        proc = tdq_ten_lenh.chay_subprocess(["git", "-C", cwd, *args], capture_output=True,
+        proc = tdq_ten_lenh.chay_subprocess(["git", "-c", "core.longpaths=true", "-C", cwd, *args], capture_output=True,
                                             encoding="utf-8", text=True, errors="replace", timeout=GIT_TIMEOUT)
         if proc.returncode == 0 or not check:
             return proc
@@ -1079,6 +1079,8 @@ def _tao_ntfs_junction_sharing(project_dir, worktree_dir):
                 res = tdq_ten_lenh.chay_subprocess(
                     ["cmd.exe", "/c", "mklink", "/J", os.path.abspath(dst), os.path.abspath(src)],
                     capture_output=True,
+                    encoding="utf-8",
+                    errors="replace",
                     text=True,
                     timeout=10,
                 )

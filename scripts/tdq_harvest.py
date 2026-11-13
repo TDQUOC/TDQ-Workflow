@@ -210,26 +210,31 @@ def build_parser() -> argparse.ArgumentParser:
         description="TDQ Governed Continuous Learning CLI: harvest, stage, and curate insights.",
     )
     parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose debug logs with timestamps.")
+    parser.add_argument("--project", default=os.environ.get("TDQ_PROJECT_DIR", "."), help="Project root directory")
 
     subparsers = parser.add_subparsers(dest="command", help="Available sub-commands")
 
     # scan
     sub_scan = subparsers.add_parser("scan", help="Scan recent logs and extract troubleshooting insights into staging.")
     sub_scan.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    sub_scan.add_argument("--project", default=argparse.SUPPRESS, help="Project root directory")
 
     # list
     sub_list = subparsers.add_parser("list", help="List all candidate insights waiting for review.")
     sub_list.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    sub_list.add_argument("--project", default=argparse.SUPPRESS, help="Project root directory")
 
     # approve
     sub_app = subparsers.add_parser("approve", help="Approve and promote a staged candidate.")
     sub_app.add_argument("candidate_id", help="Candidate identifier or filename stem")
     sub_app.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    sub_app.add_argument("--project", default=argparse.SUPPRESS, help="Project root directory")
 
     # reject
     sub_rej = subparsers.add_parser("reject", help="Reject and discard a staged candidate.")
     sub_rej.add_argument("candidate_id", help="Candidate identifier or filename stem")
     sub_rej.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    sub_rej.add_argument("--project", default=argparse.SUPPRESS, help="Project root directory")
 
     return parser
 
@@ -242,14 +247,15 @@ def main(argv: Optional[List[str]] = None) -> int:
         parser.print_help()
         return 0
 
+    root = Path(getattr(args, "project", ".") or ".").resolve()
     if args.command == "scan":
-        return cmd_scan(args)
+        return cmd_scan(args, project_root=root)
     elif args.command == "list":
-        return cmd_list(args)
+        return cmd_list(args, project_root=root)
     elif args.command == "approve":
-        return cmd_approve(args)
+        return cmd_approve(args, project_root=root)
     elif args.command == "reject":
-        return cmd_reject(args)
+        return cmd_reject(args, project_root=root)
 
     return 0
 

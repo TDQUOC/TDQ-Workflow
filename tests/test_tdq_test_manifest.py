@@ -130,6 +130,7 @@ class PytestPluginTest(unittest.TestCase):
                            PYTEST_DISABLE_PLUGIN_AUTOLOAD="1", TDQ_LOG="0")
         command = [sys.executable, "-m", "pytest", "-q", "-p", "tdq_test_manifest",
                    "-p", "xdist.plugin", "-n", str(workers), "--dist=loadfile",
+                   "--basetemp=" + str(self.project / f".basetemp-{workers}"),
                    "--junitxml=" + str(self.xml_path), *extra_args, str(self.project)]
         process = subprocess.run(command, cwd=self.project, env=environment,
                                  capture_output=True, text=True, encoding="utf-8",
@@ -291,7 +292,8 @@ def test_outer(tmp_path):
     nested = tmp_path / "test_inner.py"
     nested.write_text("def test_inner(): pass\\n")
     result = subprocess.run([sys.executable, "-m", "pytest", "-q", "-p",
-                             "tdq_test_manifest", str(nested)], capture_output=True)
+                             "tdq_test_manifest", f"--basetemp={tmp_path / 'inner_bt'}",
+                             str(nested)], capture_output=True)
     assert result.returncode == 0
 '''
         for workers in (0, 2):

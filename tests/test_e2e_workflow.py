@@ -208,11 +208,17 @@ def test_v6_full_10_step_e2e_pipeline(tmp_path):
     assert wt.is_dir(), f"Expected worktree at {wt}"
 
     # Step 5: RED test fails -> GREEN fix -> test passes -> commit in worktree
-    red = subprocess.run([sys.executable, "-B", "-m", "pytest", "tests/test_calc.py"], cwd=str(wt), capture_output=True, text=True)
+    red = subprocess.run(
+        [sys.executable, "-B", "-m", "pytest", f"--basetemp={tmp_path / 'bt_red'}", "tests/test_calc.py"],
+        cwd=str(wt), capture_output=True, text=True, encoding="utf-8", errors="replace",
+    )
     assert red.returncode != 0, "Expected RED failing test before fix"
 
     (wt / "src" / "calc.py").write_text("def add(a, b):\n    return a + b\n", encoding="utf-8")
-    green = subprocess.run([sys.executable, "-B", "-m", "pytest", "tests/test_calc.py"], cwd=str(wt), capture_output=True, text=True)
+    green = subprocess.run(
+        [sys.executable, "-B", "-m", "pytest", f"--basetemp={tmp_path / 'bt_green'}", "tests/test_calc.py"],
+        cwd=str(wt), capture_output=True, text=True, encoding="utf-8", errors="replace",
+    )
     assert green.returncode == 0, green.stdout + green.stderr
     _git(wt, "add", "src/calc.py")
     _git(wt, "commit", "-m", "fix: implement addition in add")
@@ -247,7 +253,10 @@ def test_v6_full_10_step_e2e_pipeline(tmp_path):
         encoding="utf-8",
     )
     assert _run_py(SCRIPTS_DIR / "tdq_state.py", "set", "phase=qc", cwd=repo, env_extra=env_p).returncode == 0
-    qc_run = subprocess.run([sys.executable, "-B", "-m", "pytest", "tests/test_calc.py"], cwd=str(repo), capture_output=True, text=True)
+    qc_run = subprocess.run(
+        [sys.executable, "-B", "-m", "pytest", f"--basetemp={tmp_path / 'bt_qc'}", "tests/test_calc.py"],
+        cwd=str(repo), capture_output=True, text=True, encoding="utf-8", errors="replace",
+    )
     assert qc_run.returncode == 0
 
     # Step 8: Report phase + 4-section report + tdq_harvest scan + tdq_knowledge check
